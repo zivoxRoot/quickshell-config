@@ -4,7 +4,7 @@ import QtQuick
 
 QtObject {
   // Colors
-  property color colBg: "#040e0d"
+  property color colBg: "#250833"
   property color colFg: "#f5e2c5"
   property color colFocused: "#3dd1b0"
 
