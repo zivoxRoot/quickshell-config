@@ -32,7 +32,13 @@ Scope {
 
         Item { Layout.fillWidth: true }
 
-        ClockWidget {}
+        RowLayout {
+          spacing: 10
+
+          Power {}
+
+          ClockWidget {}
+        }
       }
     }
   }
