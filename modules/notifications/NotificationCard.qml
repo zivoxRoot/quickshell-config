@@ -19,11 +19,11 @@ Rectangle {
 
   signal clicked()
 
-  color: selected ? Config.colFocused : Config.colBg
+  color: Config.colBg
 
   implicitHeight: layout.implicitHeight + 20
   border.width: 2
-  border.color: root.urgency === NotificationUrgency.Critical ? Config.colFocused : Config.colFg
+  border.color: root.urgency === NotificationUrgency.Critical ? "red" : (selected ? Config.colFocused : Config.colFg)
 
   Timer {
     running: popupMode && urgency !== NotificationUrgency.Critical
