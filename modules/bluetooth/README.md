@@ -18,3 +18,4 @@
 ## TODO
 
 - [ ] Add a gradient at the bottom when the list becomes scrollable (too long) to indicate it
+- [ ] Add hover effects and animations
