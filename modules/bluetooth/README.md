@@ -9,3 +9,12 @@
     - listing devices
     - (de)connecting to a device
     - forget a device
+
+## Dependencies
+
+- Quickshell
+- Bluez
+
+## TODO
+
+- [ ] Add a gradient at the bottom when the list becomes scrollable (too long) to indicate it
