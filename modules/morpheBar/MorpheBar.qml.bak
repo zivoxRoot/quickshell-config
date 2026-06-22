@@ -1,0 +1,43 @@
+import QtQuick
+import Quickshell
+import QtQuick.Layouts
+
+import "../../config"
+import "../../services/time"
+
+Scope {
+  Variants {
+    model: Quickshell.screens
+
+    PanelWindow {
+      required property var modelData
+      screen: modelData
+
+      anchors.top: true
+      implicitHeight: 32
+      // color: "transparent"
+      color: "red"
+      width: pill.width
+
+      Rectangle {
+        id: pill
+        anchors.centerIn: parent
+        height: 32
+        radius: height / 2
+        color: Config.colBg
+        implicitWidth: text.implicitWidth + 20
+
+        Text {
+          anchors.centerIn: parent
+          id: text
+          text: Time.time
+          color: Config.colFg
+          font {
+            family: Config.fontFamily
+            pixelSize: Config.fontSize
+          }
+        }
+      }
+    }
+  }
+}
