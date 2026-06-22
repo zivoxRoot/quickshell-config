@@ -107,7 +107,7 @@ PanelWindow {
       // (Dis)connect with `enter` or `space`
       case Qt.Key_Return:
       case Qt.Key_Space:
-        const device = root.devices[focusedIndex]
+        const device = root.sortedDevices[focusedIndex]
         if (!device) return;
         if (device.connected) device.disconnect();
         else device.connect();
@@ -276,7 +276,7 @@ PanelWindow {
                     leftPadding: 10
                     text: "🎧"
                     color: Config.colFg
-                    font.pixelSize: Config.fontSize + 6
+                    font.pixelSize: Config.fontSize + 4
                   }
 
                   ColumnLayout  {
