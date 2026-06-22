@@ -44,6 +44,21 @@ PanelWindow {
     return arr;
   }
 
+  function iconFor(device) {
+    switch (device.icon) {
+    case "audio-headphones":
+      return "󰋋";
+    case "audio-headset":
+      return "󰋎";
+    case "input-mouse":
+      return "󰍽";
+    case "input-keyboard":
+      return "󰌓";
+    default:
+      return "󰂯";
+    }
+  }
+
   function metaFor(d) {
     if (!d) return "";
     var parts = [];
@@ -110,7 +125,15 @@ PanelWindow {
         const device = root.sortedDevices[focusedIndex]
         if (!device) return;
         if (device.connected) device.disconnect();
+        else if (device.pairing) device.cancelPair();
         else device.connect();
+        break
+
+      // Forget device with `D`
+      case Qt.Key_D:
+        const dev = root.sortedDevices[focusedIndex]
+        if (!dev) return;
+        dev.forget()
         break
 
       // Search with `S`
@@ -121,6 +144,11 @@ PanelWindow {
           scanTimer.restart()
         else
           scanTimer.stop()
+        break
+
+      // Toggle bluetooth with `T`
+      case Qt.Key_T:
+        if (root.adapter) root.adapter.enabled = !root.adapter.enabled
         break
       }
     }
@@ -274,7 +302,7 @@ PanelWindow {
                   
                   Text {
                     leftPadding: 10
-                    text: "🎧"
+                    text: iconFor(modelData)
                     color: Config.colFg
                     font.pixelSize: Config.fontSize + 4
                   }
