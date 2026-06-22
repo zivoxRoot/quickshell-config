@@ -248,6 +248,18 @@ PanelWindow {
         }
       }
 
+      // No devices placeholder
+      Rectangle {
+        visible: root.sortedDevices.length === 0
+        radius: 10
+        color: "#36393f"
+        
+        Text {
+          anchors.centerIn: parent
+          text: "No devices found"
+        }
+      }
+
       // Devices list
       Rectangle {
         visible: root.adapter.enabled
