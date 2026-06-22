@@ -13,8 +13,7 @@ PanelWindow {
   visible: false
   anchors { top: true; right: true }
   margins { top: 48; right: 10 }
-
-  readonly property int maxPopupHeight: 600
+  color: "transparent"
   implicitHeight: Math.min(
     maxPopupHeight,
     contentColumn.implicitHeight + 10
@@ -23,6 +22,7 @@ PanelWindow {
   exclusionMode: ExclusionMode.Ignore
   WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
+  readonly property int maxPopupHeight: 600
   readonly property var adapter: typeof Bluetooth !== "undefined" && Bluetooth ? Bluetooth.defaultAdapter : null
   readonly property var devices: typeof Bluetooth !== "undefined" && Bluetooth && Bluetooth.devices ? Bluetooth.devices.values : []
   readonly property int connectedCount: {
@@ -32,7 +32,6 @@ PanelWindow {
   }
   readonly property var sortedDevices: {
     var arr = root.devices.slice();
-
     arr.sort(function(a, b) {
       function rank(d) {
         if (d.connected) return 0;
@@ -40,10 +39,8 @@ PanelWindow {
         if (d.paired) return 2;
         return 3;
       }
-
       return rank(a) - rank(b);
     });
-
     return arr;
   }
 
@@ -56,7 +53,9 @@ PanelWindow {
       var st = BluetoothDeviceState.toString(d.state);
       if(st && st.length > 0 && parts.indexOf(st.toLowerCase()) === -1) parts.push(st.toLowerCase());
     }
-    return parts.join(" · ");
+    const block =  parts.join(" · ");
+    if (block.length === 0) return ""
+    return block.charAt(0).toUpperCase() + block.slice(1)
   }
 
   function batteryFor(d) {
@@ -105,8 +104,8 @@ PanelWindow {
         focusedIndex = Math.max(focusedIndex - 1, 0)
         break
 
-      // (Dis)connect with `enter` or `space`  TODO: Make `enter` key work
-      case Qt.Key_Enter:
+      // (Dis)connect with `enter` or `space`
+      case Qt.Key_Return:
       case Qt.Key_Space:
         const device = root.devices[focusedIndex]
         if (!device) return;
@@ -127,9 +126,11 @@ PanelWindow {
     }
   }
 
+  // Main window layout
   Rectangle {
     anchors.fill: parent
-    color: Config.colBg
+    color: "#1b1e25"
+    radius: 14
 
     ColumnLayout {
       id: contentColumn
@@ -137,52 +138,72 @@ PanelWindow {
       anchors.margins: 10
       spacing: 10
 
-      Text {
-        visible: root.devices.length === 0
-        text: (root.adapter && root.adapter.discovering) ? "Searching..." : "No devices"
-      }
-
       // Bluetooth enabled button
-      Rectangle {
-        id: toggleBluetooth
-        color: Config.colBg
-        border.color: Config.colFg
-        height: 40
-        Layout.fillWidth: true
+      RowLayout {
+        Rectangle {
+          id: toggleBluetooth
+          color: root.adapter ? (root.adapter.enabled ? "#36393f" : "#1f222b") : "#1f222b"
+          radius: 12
+          height: 40
+          width: 40
 
-        Text {
-          anchors.centerIn: parent
-          text: "Bluetooth " + (root.adapter ? (root.adapter.enabled ? "activated" : "desactivated") : "desactivated")
-          color: Config.colFg
-          font.family: Config.fontFamily
-          font.pixelSize: Config.fontSize
-        }
-  
-        MouseArea {
-          anchors.fill: parent
-          cursorShape: Qt.PointingHandCursor
-          onClicked: {
-            if (root.adapter) root.adapter.enabled = !root.adapter.enabled
+          Text {
+            anchors.centerIn: parent
+            text: root.adapter ? (root.adapter.enabled ? "󰂯" : "󰂲") : "󰂲"
+            color: Config.colFg
+            font.family: Config.fontFamily
+            font.pixelSize: Config.fontSize + 6
+          }
+    
+          MouseArea {
+            anchors.fill: parent
+            cursorShape: Qt.PointingHandCursor
+            onClicked: {
+              if (root.adapter) root.adapter.enabled = !root.adapter.enabled
+            }
           }
         }
+
+        Text {
+          text :"Bluetooth"
+          color: Config.colFg
+          font.family: Config.fontFamily
+          font.pixelSize: Config.fontSize + 2
+          leftPadding: 10
+        }
+      }
+      // Keep padding under button when bluetooth desactivated
+      Item {
+        visible: !root.adapter.enabled
+        height: 0
       }
 
-      // Scan
+      // Scan button
       Rectangle {
         visible: root.adapter.enabled
         id: scanBtn
         property bool scanning: root.adapter ? root.adapter.discovering : false
-        color: Config.colBg
-        border.color: Config.colFg
+        color: "#1f222b"
         height: 40
+        radius: 10
         Layout.fillWidth: true
 
-        Text {
+        RowLayout {
           anchors.centerIn: parent
-          text: scanBtn.scanning ? "Scanning..." : "Scan for devices"
-          color: Config.colFg
-          font.family: Config.fontFamily
-          font.pixelSize: Config.fontSize
+          spacing: 8
+
+          Text {
+            visible: !scanBtn.scanning
+            text: "󰑓"
+            color: Config.colFg
+            font.pixelSize: Config.fontSize + 6
+          }
+          Text {
+            text: scanBtn.scanning ? "Scanning..." : "Scan for devices"
+            color: Config.colFg
+            font.family: Config.fontFamily
+            font.pixelSize: Config.fontSize
+          }
         }
   
         MouseArea {
@@ -200,9 +221,11 @@ PanelWindow {
       }
 
       // Devices list
-      Item {
+      Rectangle {
+        visible: root.adapter.enabled
         Layout.fillWidth: true
         Layout.preferredHeight: Math.min(rows.implicitHeight + 10, 410)
+        color: "transparent"
 
         Flickable {
           id: list
@@ -214,23 +237,26 @@ PanelWindow {
           Column {
             id: rows
             width: list.width
-            spacing: 10
 
             Repeater {
               model: root.sortedDevices
 
-              // One device
               Rectangle {
                 required property var modelData
                 required property int index
-                color: isConnected ? Config.colFocused : Config.colBg
-                border.color: index === focusedIndex ? "blue" : Config.colFg
-                implicitHeight: 54
+                readonly property bool isTop: index === 0
+                readonly property bool isBottom: index === root.sortedDevices.length - 1
                 readonly property bool isConnected: modelData ? modelData.connected : false
                 readonly property string battery: root.batteryFor(modelData)
+                implicitHeight: 54
                 width: rows.width
+                topLeftRadius: isTop ? 10 : 0
+                topRightRadius: isTop ? 10 : 0
+                bottomLeftRadius: isBottom ? 10 : 0
+                bottomRightRadius: isBottom ? 10 : 0
+                color: index === focusedIndex ? "#36393f" : "#1f222b"
 
-                // Connect on click
+                // Click to connect
                 MouseArea {
                   anchors.fill: parent
                   cursorShape: Qt.PointingHandCursor
@@ -244,13 +270,13 @@ PanelWindow {
                 RowLayout {
                   id: content
                   anchors.fill: parent
+                  spacing: 12
                   
                   Text {
                     leftPadding: 10
                     text: "🎧"
                     color: Config.colFg
-                    font.family: Config.fontFamily
-                    font.pixelSize: Config.fontSize
+                    font.pixelSize: Config.fontSize + 6
                   }
 
                   ColumnLayout  {
@@ -267,6 +293,7 @@ PanelWindow {
                       font.family: Config.fontFamily
                       font.pixelSize: Config.fontSize
                     }
+
                     Text {
                       id: connected
                       text: root.metaFor(modelData)
@@ -276,13 +303,24 @@ PanelWindow {
                     }
                   }
 
-                  // Device's battery
-                  Text {
-                    visible: isConnected && battery.length > 0
-                    text: battery
-                    color: Config.colFg
-                    font.family: Config.fontFamily
-                    font.pixelSize: Config.fontSize - 2
+                  // Push the battery to the right
+                  Item {
+                    Layout.fillWidth: true
+                  }
+
+                  // Battery
+                  Item {
+                    Layout.preferredWidth: 50
+                    Layout.preferredHeight: 50
+
+                    Text {
+                      anchors.centerIn: parent
+                      visible: isConnected && battery.length > 0
+                      text: battery
+                      color: Config.colFg
+                      font.family: Config.fontFamily
+                      font.pixelSize: Config.fontSize - 2
+                    }
                   }
                 }
               }
