@@ -1,6 +1,3 @@
-// TODO: Manage updating focused index on click on notification... (same for dismiss all by click)
-// TODO: Autoscroll on vim keys
-
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
@@ -82,8 +79,12 @@ Scope {
     anchors { top: true; right: true }
     margins { top: 48; right: 10 }
 
+    readonly property int maxPopupSize: 600
     implicitWidth: 380
-    implicitHeight: 600
+    implicitHeight: Math.min(
+      centerCol.implicitHeight + 10,
+      maxPopupSize
+    )
     color: "transparent"
     exclusionMode: ExclusionMode.Ignore
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
@@ -136,87 +137,127 @@ Scope {
 
     Rectangle {
       anchors.fill: parent
-      color: Config.colBg
-      border.width: 2
-      border.color: Config.colFg
+      color: "#1b1e25"
+      radius: 14
 
       ColumnLayout {
         id: centerCol
         anchors.fill: parent
-        anchors.margins: 12
+        anchors.margins: 10
         spacing: 10
 
         // Top informations
         RowLayout {
-          Layout.fillWidth: true
-          spacing: 6
-
-          Text {
+          // Clear all
+          Rectangle {
+            Layout.preferredHeight: clearText.implicitHeight + 18
             Layout.fillWidth: true
-            text: "Notifications"
-            color: Config.colFocused
-            font.family: Config.fontFamily
-            font.pixelSize: Config.fontSize
-          }
+            color: "#36393f"
+            radius: height / 2
 
-          Text {
-            Layout.fillWidth: true
-            text: doNotDisturb ? "On" : "Off"
-            color: Config.colFocused
-            font.family: Config.fontFamily
-            font.pixelSize: Config.fontSize
-          }
-
-          Text {
-            text: "Clear all"
-            visible: history.count > 0
-            color: "#C43C18"
-            font.family: Config.fontFamily
-            font.pixelSize: Config.fontSize
+            Text {
+              id: clearText
+              anchors.centerIn: parent
+              text: "Clear all"
+              color: Config.colFg
+              font.family: Config.fontFamily
+              font.pixelSize: Config.fontSize
+            }
 
             MouseArea {
               anchors.fill: parent
+              cursorShape: Qt.PointingHandCursor
               onClicked: {
                 history.clear()
                 focusedIndex = 0
               }
             }
           }
+
+          // Do not disturb
+          Rectangle {
+            Layout.preferredHeight: dndText.implicitWidth + 18
+            Layout.preferredWidth: dndText.implicitWidth + 18
+            color: "#36393f"
+            radius: height / 2
+
+            Text {
+              id: dndText
+              anchors.centerIn: parent
+              text: doNotDisturb ? "󰪑" : "󰂜"
+              // notification = "󱅫";
+              color: Config.colFg
+              font.family: Config.fontFamily
+              font.pixelSize: Config.fontSize + 8
+            }
+
+            MouseArea {
+              anchors.fill: parent
+              cursorShape: Qt.PointingHandCursor
+              onClicked: {
+                root.doNotDisturb = !root.doNotDisturb
+              }
+            }
+          }
+        }
+
+        // No notifications placeholder
+        Rectangle {
+          visible: history.count === 0
+          Layout.fillWidth: true
+          Layout.preferredHeight: text.implicitHeight + 30
+          color: "transparent"
+
+          Text {
+            id: text
+            anchors.centerIn: parent
+            text: "No notifications"
+            color: Config.colFg
+            font.family: Config.fontFamily
+            font.pixelSize: Config.fontSize
+          }
         }
 
         // Notifications list
-        Flickable {
+        Rectangle {
+          visible: history.count > 0
           Layout.fillWidth: true
-          Layout.fillHeight: true
-          clip: true
-          contentWidth: width
-          contentHeight: notificationsColumn.implicitHeight
+          Layout.preferredHeight: Math.min(notificationsColumn.implicitHeight + 10, 410)
+          color: "transparent"
 
-          Column {
-            id: notificationsColumn
+          Flickable {
+            id: list
+            anchors.fill: parent
+            contentHeight: notificationsColumn.implicitHeight
+            contentWidth: notificationsColumn.width
+            clip: true
+            bottomMargin: 10
 
-            width: parent.width
-            spacing: 10
+            Column {
+              id: notificationsColumn
+              width: list.width
+              spacing: 10
 
-            Repeater {
-              model: history
+              Repeater {
+                model: history
 
-              NotificationCard {
-                required property int index
-                required property var modelData
+                NotificationCard {
+                  required property int index
+                  required property var modelData
 
-                summary: modelData.summary
-                body: modelData.body
-                icon: modelData.image || modelData.appIcon
-                urgency: modelData.urgency
+                  summary: modelData.summary
+                  body: modelData.body
+                  icon: modelData.image || modelData.appIcon
+                  urgency: modelData.urgency
 
-                popupMode: false
-                width: notificationsColumn.width
-                selected: index == focusedIndex
-                showRelativeTime: true
-                relativeTimeText: relativeTime(modelData.timestamp, root.now)
+                  popupMode: false
+                  width: notificationsColumn.width
+                  selected: index == focusedIndex
+                  showRelativeTime: true
+                  relativeTimeText: relativeTime(modelData.timestamp, root.now)
 
-                onClicked: history.remove(index)
+                  onClicked: history.remove(index)
+                }
               }
             }
           }

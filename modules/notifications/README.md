@@ -24,3 +24,5 @@
 - [ ] Add hover effects and animations
 - [ ] Add bar at the bottom full when notification disappears
 - [ ] On hover make the notification stay in place
+- [ ] Manage updating focused index on click on notification... (same for dismiss all by click)
+- [ ] Autoscroll on vim keys

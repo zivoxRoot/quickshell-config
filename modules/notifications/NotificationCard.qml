@@ -1,3 +1,4 @@
+import QtQuick.Effects
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Notifications
@@ -19,11 +20,10 @@ Rectangle {
 
   signal clicked()
 
-  color: Config.colBg
+  color: selected ? "#36393f" : "#1f222b"
 
   implicitHeight: layout.implicitHeight + 20
-  border.width: 2
-  border.color: root.urgency === NotificationUrgency.Critical ? "red" : (selected ? Config.colFocused : Config.colFg)
+  radius: height / 4
 
   Timer {
     running: popupMode && urgency !== NotificationUrgency.Critical
@@ -42,13 +42,17 @@ Rectangle {
     anchors.margins: 10
     spacing: 10
 
-    Image {
+    Rectangle {
+      visible: source.toString() !== ""
       Layout.preferredHeight: 36
       Layout.preferredWidth: 36
       Layout.alignment: Qt.AlignTop
-      fillMode: Image.PreserveAspectFit
-      visible: source.toString() !== ""
-      source: root.icon
+
+      Image {
+        anchors.fill: parent
+        fillMode: Image.PreserveAspectCrop
+        source: root.icon
+      }
     }
 
     ColumnLayout {
@@ -57,12 +61,10 @@ Rectangle {
 
       // Top notification informations
       RowLayout {
-        Layout.fillWidth: true
 
         Text {
-          Layout.fillWidth: true
           text: root.summary
-          color: Config.colFg
+          color: "white"
           font {
             family: Config.fontFamily
             pixelSize: Config.fontSize
@@ -71,12 +73,10 @@ Rectangle {
           elide: Text.ElideRight
         }
 
-        Item { Layout.fillWidth: true }
-
         Text {
           visible: showRelativeTime
           color: Config.colFg
-          text: relativeTimeText
+          text: "· " + relativeTimeText
           font {
             family: Config.fontFamily
             pixelSize: Config.fontSize
