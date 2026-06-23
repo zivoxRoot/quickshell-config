@@ -54,33 +54,46 @@ PanelWindow {
   Rectangle {
     id: mainWindow
     anchors.fill: parent
-    color: "#36393f"
-    radius: height / 2
+    color: "transparent"
+    radius: height / 4
 
-    // Value window
+    // Left block
     Rectangle {
+      id: left
       anchors.left: parent.left
       height: root.height
-      width: (root.width / 100) * brightnessValue
+      width: 2 * brightnessValue - 6
       color: "#1f222b"
-      radius: height / 2
+      topLeftRadius: height / 4
+      bottomLeftRadius: height / 4
+    }
 
-      // Round textbox
+    // Central tile
+    Rectangle {
+      anchors.left: left.right
+      anchors.right: right.left
+      height: root.height
+      color: "transparent"
+      radius: height / 4
+
       Rectangle {
-        anchors.right: parent.right
         height: root.height
-        width: root.height
-        color: "#1b1e25"
+        anchors.centerIn: parent
+        width: parent.width - 6
+        color: "#1f222b"
         radius: height / 2
-
-        Text {
-          anchors.centerIn: parent
-          text: root.brightnessValue
-          color: Config.colFg
-          font.family: Config.fontFamily
-          font.pixelSize: Config.fontSize
-        }
       }
+    }
+
+    // Right block
+    Rectangle {
+      id: right
+      anchors.right: parent.right
+      height: root.height
+      width: 200 - (2 * brightnessValue) - 6
+      color: "#36393f"
+      topRightRadius: height / 4
+      bottomRightRadius: height / 4
     }
   }
 }
