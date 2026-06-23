@@ -273,6 +273,7 @@ PanelWindow {
           contentHeight: rows.implicitHeight
           contentWidth: rows.width
           clip: true
+          bottomMargin: 10
 
           Column {
             id: rows
