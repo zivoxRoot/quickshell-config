@@ -47,6 +47,24 @@ PanelWindow {
       }
     }
   }
+  
+  onFocusedIndexChanged: {
+    const item = repeater.itemAt(focusedIndex)
+
+    if (!item) return
+
+    const itemTop = item.y
+    const itemBottom = item.y + item.height
+
+    const viewTop = list.contentY
+    const viewBottom = list.contentY + list.height
+
+    if (itemTop < viewTop) {
+      list.contentY = itemTop
+    } else if (itemBottom > viewBottom) {
+      list.contentY = itemBottom - list.height
+    }
+  }
 
   Item {
     id: focusItem
