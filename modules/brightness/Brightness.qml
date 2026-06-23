@@ -16,15 +16,20 @@ PanelWindow {
 
   property int brightnessValue: 84
 
+  function refreshBrightness() {
+    updateBrightness.running = false
+    updateBrightness.running = true
+  }
+
   // Attach to the udev for brightness
   Process {
     running: true
-    command: ["sh", "-c", "udevadm monitor --subsystem-match=backlight --udev"]
+    command: ["udevadm", "monitor",  "--subsystem-match=backlight", "--udev"]
     stdout: SplitParser {
     onRead: {
-      updateBrightness.running = true
+      refreshBrightness()
       root.visible = true
-      hideTimer.running = true
+      hideTimer.restart()
     }
     }
   }
@@ -46,7 +51,7 @@ PanelWindow {
   // Hide after 2s
   Timer {
     id: hideTimer
-    interval: 2000
+    interval: 1000
     onTriggered: root.visible = false
   }
 
