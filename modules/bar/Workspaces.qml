@@ -5,26 +5,30 @@ import QtQuick
 import "../../config"
 
 RowLayout {
-  spacing: 7
+  spacing: 3
 
   Repeater {
     model: 9
 
-    Text {
-      property bool isActive: Hyprland.focusedWorkspace?.id === (index + 1)
-      property var ws: Hyprland.workspaces.values.find(w => w.id === index + 1)
-      text: index + 1
+    Item {
+      width: 20
+      height: 10
 
-      color: isActive ? Config.colFocused : (ws ? Config.colFg : "#999796")
-      font {
-        family: Config.fontFamily
-        pixelSize: Config.fontSize
-        weight: isActive ? 900 : 500
-      }
+      Rectangle {
+        property bool isActive: Hyprland.focusedWorkspace?.id === (index + 1)
+        property var ws: Hyprland.workspaces.values.find(w => w.id === index + 1)
+        height: 10
+        anchors.centerIn: parent
+        width: isActive ? 20 : (ws ? 15 : 10)
+        radius: height / 2
 
-      MouseArea {
-        anchors.fill: parent
-        onClicked: Hyprland.dispatch("workspace " + (index + 1))
+        color: isActive ? Config.colFocused : (ws ? Config.colFg : "#999796")
+
+        MouseArea {
+          cursorShape: Qt.PointingHandCursor
+          anchors.fill: parent
+          onClicked: Hyprland.dispatch("workspace " + (index + 1))
+        }
       }
     }
   }
