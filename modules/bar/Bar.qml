@@ -18,7 +18,7 @@ Scope {
         right: true
       }
       implicitHeight: 38
-      color: Config.colBg
+      color: "#1b1e25"
 
       // Main row
       RowLayout {

@@ -22,7 +22,7 @@ RowLayout {
         width: isActive ? 20 : (ws ? 15 : 10)
         radius: height / 2
 
-        color: isActive ? Config.colFocused : (ws ? Config.colFg : "#999796")
+        color: isActive ? Config.colFocused : (ws ? Config.colFg : "#36393f")
 
         MouseArea {
           cursorShape: Qt.PointingHandCursor
