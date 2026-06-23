@@ -43,12 +43,13 @@ Rectangle {
     spacing: 10
 
     Rectangle {
-      visible: source.toString() !== ""
+      visible: image.source.toString() !== ""
       Layout.preferredHeight: 36
       Layout.preferredWidth: 36
       Layout.alignment: Qt.AlignTop
 
       Image {
+        id: image
         anchors.fill: parent
         fillMode: Image.PreserveAspectCrop
         source: root.icon
