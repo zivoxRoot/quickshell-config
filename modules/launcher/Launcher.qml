@@ -48,6 +48,7 @@ PanelWindow {
     }
   }
   
+  // Autoscroll
   onFocusedIndexChanged: {
     const item = repeater.itemAt(focusedIndex)
 

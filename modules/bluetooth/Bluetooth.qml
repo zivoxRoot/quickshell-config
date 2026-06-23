@@ -83,6 +83,24 @@ PanelWindow {
 
   property int focusedIndex: 0
 
+  onFocusedIndexChanged: {
+    const item = repeater.itemAt(focusedIndex)
+
+    if (!item) return
+
+    const itemTop = item.y
+    const itemBottom = item.y + item.height
+
+    const viewTop = list.contentY
+    const viewBottom = list.contentY + list.height
+
+    if (itemTop < viewTop) {
+      list.contentY = itemTop
+    } else if (itemBottom > viewBottom) {
+      list.contentY = itemBottom - list.height
+    }
+  }
+
   Timer {
     id: scanTimer
     interval: 25000
@@ -280,6 +298,7 @@ PanelWindow {
             width: list.width
 
             Repeater {
+              id: repeater
               model: root.sortedDevices
 
               Rectangle {
