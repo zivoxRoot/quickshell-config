@@ -65,9 +65,6 @@ Scope {
     function toggle(): void {
       root.centerOpen = !root.centerOpen
     }
-    function clear(): void {
-      history.clear()
-    }
     function toggleDnd(): void {
       doNotDisturb = !doNotDisturb
     }
@@ -97,6 +94,7 @@ Scope {
       Keys.onPressed: event => {
         switch (event.key) {
           // Dismiss all
+          case Qt.Key_C:
           case Qt.Key_Backspace:
           case Qt.Key_Delete:
             history.clear()
