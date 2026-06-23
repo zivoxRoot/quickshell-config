@@ -32,6 +32,24 @@ Scope {
     return Math.floor(diff / 86400) + "d"
   }
 
+  onFocusedIndexChanged: {
+    const item = repeater.itemAt(focusedIndex)
+
+    if (!item) return
+
+    const itemTop = item.y
+    const itemBottom = item.y + item.height
+
+    const viewTop = list.contentY
+    const viewBottom = list.contentY + list.height
+
+    if (itemTop < viewTop) {
+      list.contentY = itemTop
+    } else if (itemBottom > viewBottom) {
+      list.contentY = itemBottom - list.height
+    }
+  }
+
   // Update now time each minute
   Timer {
     interval: 60000
@@ -237,6 +255,7 @@ Scope {
               spacing: 10
 
               Repeater {
+                id: repeater
                 model: history
 
                 NotificationCard {
