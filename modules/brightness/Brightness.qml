@@ -79,6 +79,16 @@ PanelWindow {
         color: "#1f222b"
         topLeftRadius: height / 4
         bottomLeftRadius: height / 4
+
+        Text {
+          visible: brightnessValue > 50
+          text: ""
+          anchors.verticalCenter: parent.verticalCenter 
+          leftPadding: 12
+          color: Config.colFg
+          font.family: Config.fontFamily
+          font.pixelSize: Config.fontSize
+        }
       }
 
       // Central tile
@@ -108,6 +118,17 @@ PanelWindow {
         color: "#36393f"
         topRightRadius: height / 4
         bottomRightRadius: height / 4
+
+        Text {
+          visible: brightnessValue < 50
+          text: ""
+          anchors.verticalCenter: parent.verticalCenter 
+          anchors.right: parent.right
+          rightPadding: 12
+          color: Config.colFg
+          font.family: Config.fontFamily
+          font.pixelSize: Config.fontSize
+        }
       }
     }
   }
