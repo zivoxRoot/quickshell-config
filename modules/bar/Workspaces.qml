@@ -24,6 +24,10 @@ RowLayout {
 
         color: isActive ? Config.colFocused : (ws ? Config.colFg : "#36393f")
 
+        Behavior on color {
+          ColorAnimation { duration: 150 }
+        }
+
         MouseArea {
           cursorShape: Qt.PointingHandCursor
           anchors.fill: parent

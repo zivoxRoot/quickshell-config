@@ -194,6 +194,10 @@ PanelWindow {
           height: 40
           width: 40
 
+          Behavior on color {
+            ColorAnimation { duration: 150 }
+          }
+
           Text {
             anchors.centerIn: parent
             text: root.adapter ? (root.adapter.enabled ? "󰂯" : "󰂲") : "󰂲"
@@ -338,6 +342,10 @@ PanelWindow {
                     text: iconFor(modelData)
                     color: isConnected ? Config.colFocused : Config.colFg
                     font.pixelSize: Config.fontSize + 4
+
+                    Behavior on color {
+                      ColorAnimation { duration: 150 }
+                    }
                   }
 
                   ColumnLayout  {
