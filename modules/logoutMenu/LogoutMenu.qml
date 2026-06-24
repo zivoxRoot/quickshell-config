@@ -11,7 +11,7 @@ PanelWindow {
   id: root
   anchors { top: true }
   margins { top: 48 }
-  color: Config.colBg
+  color: "transparent"
   visible: false
   implicitHeight: layout.implicitHeight
   implicitWidth: layout.implicitWidth
@@ -21,28 +21,34 @@ PanelWindow {
   exclusionMode: ExclusionMode.Ignore
   WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
-  property var actions: [
+    property var actions: [
     {
+      icon: "󰌾",
       name: "Lock",
       command: ["hyprlock"]
     },
     {
+      icon: "",
       name: "Hybernate",
       command: ["systemctl", "hybernate"]
     },
     {
+      icon: "󰍃",
       name: "Logout",
       command: ["loginctl", "terminate-user", "$USER"]
     },
     {
+      icon: "",
       name: "Shutdown",
       command: ["systemctl", "poweroff"]
     },
     {
+      icon: "",
       name: "Suspend",
       command: ["systemctl", "suspend"]
     },
     {
+      icon: "",
       name: "Reboot",
       command: ["systemctl", "reboot"]
     },
@@ -61,7 +67,8 @@ PanelWindow {
           root.visible = false
           break
 
-        // Navigate buttons with vim keys
+        // Navigate buttons with vim keys and tabs
+        case Qt.Key_Backtab:
         case Qt.Key_K:
         case Qt.Key_H:
           focusedIndex = Math.max(
@@ -69,6 +76,8 @@ PanelWindow {
             0
           )
           break
+
+        case Qt.Key_Tab:
         case Qt.Key_J:
         case Qt.Key_L:
           focusedIndex = Math.min(
@@ -100,39 +109,61 @@ PanelWindow {
     }
   }
 
-  Row {
-    id: layout
-    Layout.fillWidth: true
-    spacing: 6
-    padding: 10
+  // Actions list
+  Rectangle {
+    anchors.fill: parent
+    color: "#1b1e25"
+    radius: 14
 
-    Repeater {
-      model: actions
+    Row {
+      id: layout
+      Layout.fillWidth: true
+      spacing: 6
+      padding: 10
 
-      Rectangle {
-        required property int index
-        required property var modelData
-        implicitWidth: label.implicitWidth + 20
-        implicitHeight: label.implicitHeight + 20
-        color: Config.colBg
-        border.width: 2
-        border.color: index == focusedIndex ? Config.colFocused : Config.colFg
+      Repeater {
+        model: actions
 
-        Text {
-          id: label
-          text: modelData.name
-          color: Config.colFg
-          font.pixelSize: 18
+        // Single action
+        ColumnLayout {
           Layout.fillWidth: true
-          anchors.centerIn: parent
-        }
-          
-        MouseArea {
-          anchors.fill: parent
-          onClicked: {
-            root.visible = false
-            launcher.command = modelData.command
-            launcher.running = true
+          spacing: 16
+          required property int index
+          required property var modelData
+
+          Rectangle {
+            Layout.alignment: Qt.AlignHCenter
+            implicitWidth: label.implicitHeight + 25
+            implicitHeight: label.implicitHeight + 25
+            color: index == focusedIndex ? Config.colFocused : "#1f222b"
+            radius: height / 2
+
+            Text {
+              id: label
+              text: modelData.icon
+              color: Config.colFg
+              font.pixelSize: 20
+              Layout.fillWidth: true
+              anchors.centerIn: parent
+            }
+              
+            MouseArea {
+              anchors.fill: parent
+              cursorShape: Qt.PointingHandCursor
+              onClicked: {
+                root.visible = false
+                launcher.command = modelData.command
+                launcher.running = true
+              }
+            }
+          }
+
+          Text {
+            text: modelData.name
+            Layout.alignment: Qt.AlignHCenter
+            color: Config.colFg
+            font.family: Config.fontFamily
+            font.pixelSize: Config.fontSize - 2
           }
         }
       }
