@@ -10,7 +10,7 @@ PanelWindow {
   anchors { top: true }
   margins { top: 48 }
   visible: true
-  implicitHeight: 30
+  implicitHeight: 40
   implicitWidth: 200
   exclusionMode: ExclusionMode.Ignore
 
@@ -59,46 +59,56 @@ PanelWindow {
   Rectangle {
     id: mainWindow
     anchors.fill: parent
+    radius: height / 2
     color: "transparent"
-    radius: height / 4
 
-    // Left block
     Rectangle {
-      id: left
-      anchors.left: parent.left
-      height: root.height
-      width: 2 * brightnessValue - 6
-      color: "#1f222b"
-      topLeftRadius: height / 4
-      bottomLeftRadius: height / 4
-    }
-
-    // Central tile
-    Rectangle {
-      anchors.left: left.right
-      anchors.right: right.left
-      height: root.height
+      id: main
+      anchors.fill: parent
       color: "transparent"
+      implicitHeight: 30
       radius: height / 4
 
+      // Left block
       Rectangle {
-        height: root.height
-        anchors.centerIn: parent
-        width: parent.width - 6
+        id: left
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter 
+        implicitHeight: 30
+        width: 2 * brightnessValue - 6
         color: "#1f222b"
-        radius: height / 2
+        topLeftRadius: height / 4
+        bottomLeftRadius: height / 4
       }
-    }
 
-    // Right block
-    Rectangle {
-      id: right
-      anchors.right: parent.right
-      height: root.height
-      width: 200 - (2 * brightnessValue) - 6
-      color: "#36393f"
-      topRightRadius: height / 4
-      bottomRightRadius: height / 4
+      // Central tile
+      Rectangle {
+        anchors.left: left.right
+        anchors.right: right.left
+        height: root.height
+        color: "transparent"
+        radius: height / 4
+
+        Rectangle {
+          height: root.height
+          anchors.centerIn: parent
+          width: parent.width - 6
+          color: "#1f222b"
+          radius: height / 2
+        }
+      }
+
+      // Right block
+      Rectangle {
+        id: right
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter 
+        implicitHeight: 30
+        width: 200 - (2 * brightnessValue) - 6
+        color: "#36393f"
+        topRightRadius: height / 4
+        bottomRightRadius: height / 4
+      }
     }
   }
 }
