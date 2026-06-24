@@ -83,6 +83,7 @@ PanelWindow {
 
   property int focusedIndex: 0
 
+  // Autoscroll
   onFocusedIndexChanged: {
     const item = repeater.itemAt(focusedIndex)
 
@@ -335,7 +336,7 @@ PanelWindow {
                   Text {
                     leftPadding: 10
                     text: iconFor(modelData)
-                    color: Config.colFg
+                    color: isConnected ? Config.colFocused : Config.colFg
                     font.pixelSize: Config.fontSize + 4
                   }
 
