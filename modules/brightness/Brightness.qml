@@ -81,12 +81,12 @@ PanelWindow {
         bottomLeftRadius: height / 4
 
         Text {
-          visible: brightnessValue > 50
-          text: ""
+          visible: brightnessValue >= 50
+          text: ""
           anchors.verticalCenter: parent.verticalCenter 
           leftPadding: 12
           color: Config.colFg
-          font.family: Config.fontFamily
+          font.family: Config.fontFamily + 4
           font.pixelSize: Config.fontSize
         }
       }
@@ -121,12 +121,12 @@ PanelWindow {
 
         Text {
           visible: brightnessValue < 50
-          text: ""
+          text: ""
           anchors.verticalCenter: parent.verticalCenter 
           anchors.right: parent.right
           rightPadding: 12
           color: Config.colFg
-          font.family: Config.fontFamily
+          font.family: Config.fontFamily + 4
           font.pixelSize: Config.fontSize
         }
       }
