@@ -9,12 +9,12 @@ PanelWindow {
   color: "transparent"
   anchors { top: true }
   margins { top: 48 }
-  visible: true
+  visible: false
   implicitHeight: 40
   implicitWidth: 200
   exclusionMode: ExclusionMode.Ignore
 
-  property int brightnessValue: 84
+  property int brightnessValue: 0
 
   function refreshBrightness() {
     updateBrightness.running = false
