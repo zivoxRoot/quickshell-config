@@ -65,6 +65,7 @@ PanelWindow {
         // Close logout menu
         case Qt.Key_Escape:
           root.visible = false
+          root.focusedIndex = false
           break
 
         // Navigate buttons with vim keys and tabs
@@ -105,6 +106,7 @@ PanelWindow {
   IpcHandler {
     target: "logout"
     function toggle(): void {
+      root.focusedIndex = false
       root.visible = !root.visible
     }
   }
