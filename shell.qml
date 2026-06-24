@@ -6,6 +6,7 @@ import "modules/logoutMenu"
 import "modules/wifi"
 import "modules/bluetooth"
 import "modules/brightness"
+import "modules/volume"
 import "modules/launcher"
 import "modules/morpheBar"
 
@@ -16,6 +17,7 @@ Scope {
   Wifi {}
   Bluetooth {}
   Brightness {}
+  Volume {}
   Launcher {}
   // MorpheBar {}
 }
