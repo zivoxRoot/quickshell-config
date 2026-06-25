@@ -163,7 +163,7 @@ PanelWindow {
           Text {
             text: modelData.name
             Layout.alignment: Qt.AlignHCenter
-            color: Config.colFg
+            color: index == focusedIndex ? Config.colFocused : Config.colFg
             font.family: Config.fontFamily
             font.pixelSize: Config.fontSize - 2
           }
