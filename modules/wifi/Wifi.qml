@@ -116,9 +116,9 @@ PanelWindow {
     case ConnectionState.Disconnecting:
       return "Disconnecting...";
     case ConnectionState.Disconnected:
-      return net.known ? "Disconnected" : "";
+      return net.known ? "Disconnected" : "Unknown";
     default:
-      return net.known ? "Known network" : "";
+      return net.known ? "Known network" : "Unknown";
     }
   }
 
@@ -194,6 +194,7 @@ PanelWindow {
       case Qt.Key_D:
         const network = root.wifiNetsSorted[focusedIndex]
         if (!network) return;
+        focusedIndex = 0
         network.forget()
         break
 
@@ -353,7 +354,7 @@ PanelWindow {
                 readonly property bool isTop: index === 0
                 readonly property bool isBottom: index === root.wifiNetsSorted.length - 1
                 readonly property bool active: modelData && modelData.connected
-                implicitHeight: 100
+                implicitHeight: networking.implicitHeight + 10
                 width: rows.width
                 topLeftRadius: isTop ? 10 : 0
                 topRightRadius: isTop ? 10 : 0
@@ -393,6 +394,7 @@ PanelWindow {
                 }
 
                 ColumnLayout {
+                  id: networking
                   anchors.fill: parent
 
                   RowLayout {
