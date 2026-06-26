@@ -71,7 +71,7 @@ PanelWindow {
 
         Text {
           visible: volume >= 50
-          text: muted ? "󰎊" : "󰎇"
+          text: muted || volume === 0 ? "󰎊" : "󰎇"
           anchors.verticalCenter: parent.verticalCenter 
           leftPadding: 12
           color: Config.md3.on_primary
@@ -110,7 +110,7 @@ PanelWindow {
 
         Text {
           visible: volume < 50
-          text: muted ? "󰎊" : "󰎇"
+          text: muted || volume === 0 ? "󰎊" : "󰎇"
           anchors.verticalCenter: parent.verticalCenter 
           anchors.right: parent.right
           rightPadding: 12
