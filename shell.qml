@@ -8,6 +8,7 @@ import "modules/bluetooth"
 import "modules/brightness"
 import "modules/volume"
 import "modules/launcher"
+import "modules/wallpaper-switcher"
 import "modules/morpheBar"
 
 Scope {
@@ -19,5 +20,6 @@ Scope {
   Brightness {}
   Volume {}
   Launcher {}
+  Switcher {}
   // MorpheBar {}
 }
