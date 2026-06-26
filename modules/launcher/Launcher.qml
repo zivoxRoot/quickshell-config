@@ -128,6 +128,10 @@ PanelWindow {
             focusItem.forceActiveFocus()
             event.accepted = true
           }
+          if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+            launch(focusedIndex)
+            event.accepted = true
+          }
         }
 
         focus: root.visible
