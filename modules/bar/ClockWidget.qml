@@ -5,7 +5,7 @@ import "../../config"
 
 Text {
   text: Time.time
-  color: Config.colFg
+  color: Config.md3.on_background
 
   font {
     family: Config.fontFamily

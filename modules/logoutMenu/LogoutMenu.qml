@@ -114,7 +114,7 @@ PanelWindow {
   // Actions list
   Rectangle {
     anchors.fill: parent
-    color: "#1b1e25"
+    color: Config.md3.background
     radius: 14
 
     Row {
@@ -137,13 +137,13 @@ PanelWindow {
             Layout.alignment: Qt.AlignHCenter
             implicitWidth: label.implicitHeight + 25
             implicitHeight: label.implicitHeight + 25
-            color: index == focusedIndex ? Config.colFocused : "#1f222b"
+            color: index == focusedIndex ? Config.md3.primary : Config.md3.tertiary
             radius: height / 2
 
             Text {
               id: label
               text: modelData.icon
-              color: Config.colFg
+              color: index == focusedIndex ? Config.md3.on_primary : Config.md3.on_tertiary
               font.pixelSize: 20
               Layout.fillWidth: true
               anchors.centerIn: parent
@@ -163,7 +163,7 @@ PanelWindow {
           Text {
             text: modelData.name
             Layout.alignment: Qt.AlignHCenter
-            color: index == focusedIndex ? Config.colFocused : Config.colFg
+            color: index == focusedIndex ? Config.md3.primary : Config.md3.on_background
             font.family: Config.fontFamily
             font.pixelSize: Config.fontSize - 2
           }

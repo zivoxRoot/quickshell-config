@@ -153,7 +153,7 @@ Scope {
 
     Rectangle {
       anchors.fill: parent
-      color: "#1b1e25"
+      color: Config.md3.background
       radius: 14
 
       ColumnLayout {
@@ -168,14 +168,14 @@ Scope {
           Rectangle {
             Layout.preferredHeight: clearText.implicitHeight + 18
             Layout.fillWidth: true
-            color: "#36393f"
+            color: Config.md3.primary
             radius: height / 2
 
             Text {
               id: clearText
               anchors.centerIn: parent
               text: "Clear all"
-              color: Config.colFg
+              color: Config.md3.on_primary
               font.family: Config.fontFamily
               font.pixelSize: Config.fontSize
             }
@@ -194,7 +194,7 @@ Scope {
           Rectangle {
             Layout.preferredHeight: dndText.implicitWidth + 18
             Layout.preferredWidth: dndText.implicitWidth + 18
-            color: "#36393f"
+            color: Config.md3.secondary
             radius: height / 2
 
             Text {
@@ -202,7 +202,7 @@ Scope {
               anchors.centerIn: parent
               text: doNotDisturb ? "󰪑" : "󰂜"
               // notification = "󱅫";
-              color: Config.colFg
+              color: Config.md3.on_secondary
               font.family: Config.fontFamily
               font.pixelSize: Config.fontSize + 8
             }
@@ -228,7 +228,7 @@ Scope {
             id: text
             anchors.centerIn: parent
             text: "No notifications"
-            color: Config.colFg
+            color: Config.md3.on_background
             font.family: Config.fontFamily
             font.pixelSize: Config.fontSize
           }

@@ -33,7 +33,7 @@ Item {
   Text {
     id: text
     text: getIcon() + " " + batteryLevel + "%"
-    color: isLow ? "orange" : (isCritical ? "red" : Config.colFg)
+    color: isLow ? "orange" : (isCritical ? "red" : Config.md3.on_background)
 
     font {
       family: Config.fontFamily

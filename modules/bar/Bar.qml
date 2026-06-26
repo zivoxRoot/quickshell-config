@@ -18,7 +18,7 @@ Scope {
         right: true
       }
       implicitHeight: 38
-      color: "#1b1e25"
+      color: Config.md3.background
 
       // Main row
       RowLayout {

@@ -76,7 +76,7 @@ PanelWindow {
         anchors.verticalCenter: parent.verticalCenter 
         implicitHeight: 30
         width: 2 * brightnessValue - 6
-        color: "#1f222b"
+        color: Config.md3.primary
         topLeftRadius: height / 4
         bottomLeftRadius: height / 4
 
@@ -85,7 +85,7 @@ PanelWindow {
           text: ""
           anchors.verticalCenter: parent.verticalCenter 
           leftPadding: 12
-          color: Config.colFg
+          color: Config.md3.on_primary
           font.family: Config.fontFamily + 4
           font.pixelSize: Config.fontSize
         }
@@ -103,7 +103,7 @@ PanelWindow {
           height: root.height
           anchors.centerIn: parent
           width: parent.width - 6
-          color: "#1f222b"
+          color: Config.md3.primary
           radius: height / 2
         }
       }
@@ -115,7 +115,7 @@ PanelWindow {
         anchors.verticalCenter: parent.verticalCenter 
         implicitHeight: 30
         width: 200 - (2 * brightnessValue) - 6
-        color: "#36393f"
+        color: Config.md3.surface_container_highest
         topRightRadius: height / 4
         bottomRightRadius: height / 4
 
@@ -125,7 +125,7 @@ PanelWindow {
           anchors.verticalCenter: parent.verticalCenter 
           anchors.right: parent.right
           rightPadding: 12
-          color: Config.colFg
+          color: Config.md3.on_surface_container_highest
           font.family: Config.fontFamily + 4
           font.pixelSize: Config.fontSize
         }

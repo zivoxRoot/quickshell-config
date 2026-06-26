@@ -176,7 +176,7 @@ PanelWindow {
   // Main window layout
   Rectangle {
     anchors.fill: parent
-    color: "#1b1e25"
+    color: Config.md3.background
     radius: 14
 
     ColumnLayout {
@@ -189,7 +189,7 @@ PanelWindow {
       RowLayout {
         Rectangle {
           id: toggleBluetooth
-          color: root.adapter ? (root.adapter.enabled ? "#36393f" : "#1f222b") : "#1f222b"
+          color: root.adapter ? (root.adapter.enabled ? Config.md3.secondary : Config.md3.background) : Config.md3.background
           radius: 12
           height: 40
           width: 40
@@ -201,7 +201,7 @@ PanelWindow {
           Text {
             anchors.centerIn: parent
             text: root.adapter ? (root.adapter.enabled ? "󰂯" : "󰂲") : "󰂲"
-            color: Config.colFg
+            color: root.adapter ? (root.adapter.enabled ? Config.md3.on_secondary : Config.md3.on_background) : Config.md3.on_background
             font.family: Config.fontFamily
             font.pixelSize: Config.fontSize + 6
           }
@@ -217,7 +217,7 @@ PanelWindow {
 
         Text {
           text :"Bluetooth"
-          color: Config.colFg
+          color: Config.md3.on_background
           font.family: Config.fontFamily
           font.pixelSize: Config.fontSize + 2
           leftPadding: 10
@@ -234,7 +234,7 @@ PanelWindow {
         visible: root.adapter.enabled
         id: scanBtn
         property bool scanning: root.adapter ? root.adapter.discovering : false
-        color: "#1f222b"
+        color: Config.md3.primary
         height: 40
         radius: 10
         Layout.fillWidth: true
@@ -246,12 +246,12 @@ PanelWindow {
           Text {
             visible: !scanBtn.scanning
             text: "󰑓"
-            color: Config.colFg
+            color: Config.md3.on_primary
             font.pixelSize: Config.fontSize + 6
           }
           Text {
             text: scanBtn.scanning ? "Scanning..." : "Scan for devices"
-            color: Config.colFg
+            color: Config.md3.on_primary
             font.family: Config.fontFamily
             font.pixelSize: Config.fontSize
           }
@@ -319,7 +319,7 @@ PanelWindow {
                 topRightRadius: isTop ? 10 : 0
                 bottomLeftRadius: isBottom ? 10 : 0
                 bottomRightRadius: isBottom ? 10 : 0
-                color: index === focusedIndex ? "#36393f" : "#1f222b"
+                color: index === focusedIndex ? Config.md3.secondary_container : Config.md3.surface
 
                 // Click to connect
                 MouseArea {
@@ -340,7 +340,8 @@ PanelWindow {
                   Text {
                     leftPadding: 10
                     text: iconFor(modelData)
-                    color: isConnected ? Config.colFocused : Config.colFg
+                    color: isConnected ? Config.md3.primary : Config.md3.on_background
+
                     font.pixelSize: Config.fontSize + 4
 
                     Behavior on color {
@@ -357,7 +358,7 @@ PanelWindow {
                     Text {
                       id: label
                       text: (modelData ? (modelData.deviceName || modelData.name || "Unknown") : "Unknown")
-                      color: Config.colFg
+                      color: Config.md3.on_background
                       font.bold: true
                       font.family: Config.fontFamily
                       font.pixelSize: Config.fontSize
@@ -366,7 +367,7 @@ PanelWindow {
                     Text {
                       id: connected
                       text: root.metaFor(modelData)
-                      color: Config.colFg
+                      color: Config.md3.on_background
                       font.family: Config.fontFamily
                       font.pixelSize: Config.fontSize - 2
                     }
@@ -386,7 +387,7 @@ PanelWindow {
                       anchors.centerIn: parent
                       visible: isConnected && battery.length > 0
                       text: battery
-                      color: Config.colFg
+                      color: Config.md3.on_background
                       font.family: Config.fontFamily
                       font.pixelSize: Config.fontSize - 2
                     }

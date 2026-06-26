@@ -106,7 +106,7 @@ PanelWindow {
   // Main window layout
   Rectangle {
     anchors.fill: parent
-    color: "#1b1e25"
+    color: Config.md3.background
     radius: 14
 
     ColumnLayout {
@@ -119,7 +119,7 @@ PanelWindow {
         id: input
         Layout.fillWidth: true
         placeholderText: "Search an application"
-        placeholderTextColor: Config.colFg
+        placeholderTextColor: Config.md3.on_background
         color: "white"
         background: textBg
 
@@ -166,10 +166,11 @@ PanelWindow {
               id: repeater
               model: filteredApps
 
+              // One application
               Rectangle {
                 required property var modelData
                 required property int index
-                color: index === focusedIndex ? "#36393f" : "transparent"
+                color: index === focusedIndex ? Config.md3.secondary_container : Config.md3.surface
                 radius: height / 2
                 height: 60
                 width: rows.width
@@ -206,7 +207,7 @@ PanelWindow {
                     // App name
                     Text {
                       text: modelData.name
-                      color: "white"
+                      color: index === focusedIndex ? Config.md3.on_secondary_container : Config.md3.on_surface
                       font.family: Config.fontFamily
                       font.pixelSize: Config.fontSize
                     }
@@ -215,7 +216,7 @@ PanelWindow {
                     Text {
                       visible: modelData.genericName !== ""
                       text: modelData.genericName
-                      color: Config.colFg
+                      color: index === focusedIndex ? Config.md3.on_secondary_container : Config.md3.on_surface
                       font.family: Config.fontFamily
                       font.pixelSize: Config.fontSize
                     }

@@ -20,7 +20,7 @@ Rectangle {
 
   signal clicked()
 
-  color: selected ? "#36393f" : "#1f222b"
+  color: selected ? Config.md3.secondary_container : Config.md3.surface
 
   implicitHeight: layout.implicitHeight + 20
   radius: height / 4
@@ -65,7 +65,7 @@ Rectangle {
 
         Text {
           text: root.summary
-          color: "white"
+          color: selected ? Config.md3.on_secondary_container : Config.md3.on_surface
           font {
             family: Config.fontFamily
             pixelSize: Config.fontSize
@@ -76,7 +76,7 @@ Rectangle {
 
         Text {
           visible: showRelativeTime
-          color: Config.colFg
+          color: selected ? Config.md3.on_secondary_container : Config.md3.on_surface
           text: "· " + relativeTimeText
           font {
             family: Config.fontFamily
@@ -91,7 +91,7 @@ Rectangle {
         Layout.fillWidth: true
         text: root.body
         visible: text !== ""
-        color: Config.colFg
+        color: selected ? Config.md3.on_secondary_container : Config.md3.on_surface
         font.family: Config.fontFamily
         font.pixelSize: Config.fontSize
         wrapMode: Text.WordWrap
