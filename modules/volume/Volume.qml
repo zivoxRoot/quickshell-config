@@ -61,6 +61,13 @@ PanelWindow {
         color: Config.md3.primary
         topLeftRadius: height / 4
         bottomLeftRadius: height / 4
+    
+        Behavior on width {
+          NumberAnimation {
+            duration: 180
+            easing.type: Easing.OutCubic
+          }
+        }
 
         Text {
           visible: volume >= 50
@@ -84,7 +91,7 @@ PanelWindow {
         Rectangle {
           height: root.height
           anchors.centerIn: parent
-          width: parent.width - 6
+          width: parent.width - 8
           color: Config.md3.primary
           radius: height / 2
         }
