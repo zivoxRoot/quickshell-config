@@ -56,26 +56,12 @@ PanelWindow {
     }
   }
 
-  property var target: ""
-  
   function switchWallpaper(wallpaper) {
     const url = new URL(wallpaper.fileUrl)
     const filename = url.pathname.split("/").pop()
-    target = "/home/theophile/Pictures/Wallpapers/" + filename
-    switchWallpaperProcess.running = true
-    launchMatugenProcess.running = true
-  }
-
-  Process {
-    id: switchWallpaperProcess
-    running: false
-    command: ["awww", "img", target]
-  }
-
-  Process {
-    id: launchMatugenProcess
-    running: false
-    command: ["matugen", "image", target]
+    const target = "/home/theophile/Pictures/Wallpapers/" + filename
+    Quickshell.execDetached(["bash", Quickshell.shellPath("modules/wallpaper-switcher/switch.sh"), target])
+    root.visible = false
   }
 
   // Autoscroll
