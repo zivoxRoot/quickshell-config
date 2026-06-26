@@ -12,7 +12,7 @@ PanelWindow {
   margins { top: 48 }
   exclusionMode: ExclusionMode.Ignore
   width: 800
-  height: 120
+  height: 150
   WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
   color: "transparent"
 
@@ -47,12 +47,35 @@ PanelWindow {
         focusedIndex = Math.max(focusedIndex - 1, 0)
         break
 
-      // (Dis)connect with `enter` or `space`
+      // Select wallpaper with `return` and `space`
       case Qt.Key_Return:
       case Qt.Key_Space:
+        switchWallpaper(repeater.itemAt(focusedIndex))
         break
       }
     }
+  }
+
+  property var target: ""
+  
+  function switchWallpaper(wallpaper) {
+    const url = new URL(wallpaper.fileUrl)
+    const filename = url.pathname.split("/").pop()
+    target = "/home/theophile/Pictures/Wallpapers/" + filename
+    switchWallpaperProcess.running = true
+    launchMatugenProcess.running = true
+  }
+
+  Process {
+    id: switchWallpaperProcess
+    running: false
+    command: ["awww", "img", target]
+  }
+
+  Process {
+    id: launchMatugenProcess
+    running: false
+    command: ["matugen", "image", target]
   }
 
   // Autoscroll
@@ -101,7 +124,7 @@ PanelWindow {
 
       Row {
         id: rows
-        spacing: 18
+        spacing: 24
         anchors.verticalCenter: parent.verticalCenter
 
         Repeater {
@@ -112,8 +135,8 @@ PanelWindow {
             anchors.verticalCenter: parent.verticalCenter 
             required property int index
             required property var fileUrl
-            width: 180
-            height: 100
+            width: 216
+            height: 120
             scale: index === focusedIndex ? 1.2 : 1.0
 
             Behavior on scale {
