@@ -23,10 +23,14 @@ Rectangle {
   color: selected ? Config.md3.secondary_container : Config.md3.surface
 
   implicitHeight: layout.implicitHeight + 20
-  radius: height / 4
+  radius: 14
+
+  HoverHandler {
+    id: hover
+  }
 
   Timer {
-    running: popupMode && urgency !== NotificationUrgency.Critical
+    running: popupMode && urgency !== NotificationUrgency.Critical && !hover.hovered
     interval: 2000
     onTriggered: root.clicked()
   }
@@ -60,9 +64,9 @@ Rectangle {
       Layout.fillWidth: true
       spacing: 2
 
-      // Top notification informations
       RowLayout {
 
+        // Title
         Text {
           text: root.summary
           color: selected ? Config.md3.on_secondary_container : Config.md3.on_surface
@@ -74,6 +78,7 @@ Rectangle {
           elide: Text.ElideRight
         }
 
+        // Time
         Text {
           visible: showRelativeTime
           color: selected ? Config.md3.on_secondary_container : Config.md3.on_surface
@@ -87,6 +92,7 @@ Rectangle {
         }
       }
 
+      // Body
       Text {
         Layout.fillWidth: true
         text: root.body
