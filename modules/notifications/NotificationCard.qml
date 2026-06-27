@@ -15,6 +15,8 @@ Rectangle {
   property bool showRelativeTime: false
   property string relativeTimeText: ""
 
+  property bool imageOpen: false
+
   signal clicked()
 
   color: selected ? Config.md3.secondary_container : Config.md3.surface
@@ -62,53 +64,97 @@ Rectangle {
       Layout.fillWidth: true
       spacing: 10
 
-      ColumnLayout {
-        Layout.fillWidth: true
-        spacing: 2
+      // Top block: title, description, time, + image preview
+      RowLayout {
+        ColumnLayout {
+          Layout.fillWidth: true
+          spacing: 2
 
-        RowLayout {
+          RowLayout {
 
-          // Title
-          Text {
-            text: root.notification.summary
-            color: selected ? Config.md3.on_secondary_container : Config.md3.on_surface
-            font {
-              family: Config.fontFamily
-              pixelSize: Config.fontSize
-              bold: true
+            // Title
+            Text {
+              text: root.notification.summary
+              color: selected ? Config.md3.on_secondary_container : Config.md3.on_surface
+              font {
+                family: Config.fontFamily
+                pixelSize: Config.fontSize
+                bold: true
+              }
+              elide: Text.ElideRight
             }
-            elide: Text.ElideRight
+
+            // Time
+            Text {
+              visible: showRelativeTime
+              color: selected ? Config.md3.on_secondary_container : Config.md3.on_surface
+              text: "· " + relativeTimeText
+              font {
+                family: Config.fontFamily
+                pixelSize: Config.fontSize
+                bold: true
+              }
+              elide: Text.ElideRight
+            }
           }
 
-          // Time
+          // Body
           Text {
-            visible: showRelativeTime
+            Layout.fillWidth: true
+            text: root.notification.body
+            visible: text !== ""
             color: selected ? Config.md3.on_secondary_container : Config.md3.on_surface
-            text: "· " + relativeTimeText
-            font {
-              family: Config.fontFamily
-              pixelSize: Config.fontSize
-              bold: true
-            }
-            elide: Text.ElideRight
+            font.family: Config.fontFamily
+            font.pixelSize: Config.fontSize
+            wrapMode: Text.WordWrap
           }
         }
 
-        // Body
-        Text {
-          Layout.fillWidth: true
-          text: root.notification.body
-          visible: text !== ""
-          color: selected ? Config.md3.on_secondary_container : Config.md3.on_surface
-          font.family: Config.fontFamily
-          font.pixelSize: Config.fontSize
-          wrapMode: Text.WordWrap
+        RowLayout {
+
+          // Image preview
+          Rectangle {
+            visible: !imageOpen
+            width: 40
+            height: 40
+
+            Image {
+              visible: source.toString() !== ""
+              anchors.fill: parent
+              fillMode: Image.PreserveAspectCrop
+              source: root.notification.appIcon
+              asynchronous: true
+              smooth: true
+            }
+          }
+
+          // Image preview toggle button
+          Rectangle {
+            width: 20
+            height: 20
+            color: Config.md3.primary
+            radius: height / 2
+
+            Text {
+              text: imageOpen ? "" : ""
+              anchors.centerIn: parent
+              color: Config.md3.on_primary
+              font.family: Config.fontFamily
+              font.pixelSize: Config.fontSize + 4
+            }
+
+            MouseArea {
+              anchors.fill: parent
+              cursorShape: Qt.PointingHandCursor
+              onClicked: imageOpen = !imageOpen
+            }
+          }
         }
       }
 
       // Image
       Image {
-        visible: source.toString() !== ""
+        visible: source.toString() !== "" && imageOpen
         width: parent.width
         Layout.fillWidth: true
         fillMode: Image.PreserveAspectFit
