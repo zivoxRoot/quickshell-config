@@ -65,7 +65,7 @@ Rectangle {
     height: 700
     width: 1200
     color: Config.md3.background
-    radius: 14
+    radius: 32
 
     RowLayout {
       height: parent.height - 20
@@ -89,13 +89,13 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             color: Config.md3.surface_container
-            radius: 14
+            radius: 22
           }
           Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             color: Config.md3.surface_container
-            radius: 14
+            radius: 22
           }
         }
       }
@@ -227,13 +227,13 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             color: Config.md3.surface_container
-            radius: 14
+            radius: 22
           }
           Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             color: Config.md3.surface_container
-            radius: 14
+            radius: 22
           }
         }
       }
