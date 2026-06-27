@@ -38,6 +38,7 @@ Rectangle {
     }
   }
 
+  // Background image
   Image {
     id: background
     anchors.fill: parent
@@ -50,42 +51,119 @@ Rectangle {
     }
   }
 
+  // Safety button
   Button {
     text: "LET ME OUT PLEASE!"
     onClicked: context.unlocked();
   }
 
-  ColumnLayout {
-    anchors.horizontalCenter: parent.horizontalCenter
-    anchors.top: parent.verticalCenter
+  // Main rectangle
+  Rectangle {
+    id: block
+    anchors.centerIn: parent
+    height: 700
+    width: 1200
+    color: Config.md3.background
+    radius: 14
 
-    // Password characters
     RowLayout {
-      Repeater {
-        model: pass
-        visible: !root.context.unlockInProgress
+      height: parent.height
+      width: parent.width
 
-        Rectangle {
-          color: Config.md3.primary
-          height: 10
-          width: 10
-          radius: height / 2
+      // Left
+      Rectangle {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        color: "green"
+      }
+
+      // Center
+      Rectangle {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        color: Config.md3.background
+
+        ColumnLayout {
+          height: parent.height
+          width: parent.width
+
+          ColumnLayout {
+
+            // Time & date
+            Rectangle {
+              Layout.fillWidth: true
+              Layout.fillHeight: true
+              color: Config.md3.background
+
+              ColumnLayout {
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.verticalCenter
+
+                Text {
+                  anchors.horizontalCenter: parent.horizontalCenter
+                  text: "11:28 AM"
+                  color: Config.md3.on_background
+                  font.pixelSize: 46
+                  font.family: Config.fontFamily
+                }
+
+                Text {
+                  anchors.horizontalCenter: parent.horizontalCenter
+                  text: "Monday, 26 January 2026"
+                  color: Config.md3.on_background
+                  font.pixelSize: 24
+                  font.family: Config.fontFamily
+                }
+              }
+            }
+
+            // Password characters
+            Rectangle {
+              Layout.fillWidth: true
+              Layout.fillHeight: true
+              color: Config.md3.background
+
+              RowLayout {
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.verticalCenter
+
+                Repeater {
+                  model: pass
+                  visible: !root.context.unlockInProgress
+
+                  Rectangle {
+                    color: Config.md3.primary
+                    height: 10
+                    width: 10
+                    radius: height / 2
+                  }
+                }
+              }
+            }
+          }
+
+          // Loader
+          Label {
+            visible: root.context.unlockInProgress
+            text: "LOADING..."
+            color: "black"
+          }
+
+          // Error
+          Label {
+            visible: root.context.showFailure
+            text: "Incorrect password"
+            color: "black"
+          }
         }
       }
-    }
 
-    // Loader
-    Label {
-      visible: root.context.unlockInProgress
-      text: "LOADING..."
-      color: "black"
-    }
-
-    // Error
-    Label {
-      visible: root.context.showFailure
-      text: "Incorrect password"
-      color: "black"
+      // Right
+      Rectangle {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        color: "red"
+      }
     }
   }
 }
