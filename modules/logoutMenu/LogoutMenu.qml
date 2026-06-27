@@ -25,7 +25,7 @@ PanelWindow {
     {
       icon: "󰌾",
       name: "Lock",
-      command: ["hyprlock"]
+      command: ["qs", "ipc", "call", "lockscreen", "lock"]
     },
     {
       icon: "",
