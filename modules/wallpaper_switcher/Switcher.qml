@@ -60,7 +60,7 @@ PanelWindow {
     const url = new URL(wallpaper.fileUrl)
     const filename = url.pathname.split("/").pop()
     const target = "/home/theophile/Pictures/Wallpapers/" + filename
-    Quickshell.execDetached(["bash", Quickshell.shellPath("modules/wallpaper-switcher/switch.sh"), target])
+    Quickshell.execDetached(["bash", Quickshell.shellPath("modules/wallpaper_switcher/switch.sh"), target])
     root.visible = false
   }
 
