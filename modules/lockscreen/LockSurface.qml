@@ -68,14 +68,36 @@ Rectangle {
     radius: 14
 
     RowLayout {
-      height: parent.height
-      width: parent.width
+      height: parent.height - 20
+      width: parent.width - 20
+      anchors.horizontalCenter: parent.horizontalCenter
+      anchors.verticalCenter: parent.verticalCenter
 
       // Left
       Rectangle {
         Layout.preferredWidth: 350
         Layout.fillHeight: true
-        color: "green"
+        color: "transparent"
+
+        ColumnLayout {
+          height: parent.height
+          width: parent.width
+          anchors.margins: 10
+          spacing: 10
+
+          Rectangle {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            color: Config.md3.surface_container
+            radius: 14
+          }
+          Rectangle {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            color: Config.md3.surface_container
+            radius: 14
+          }
+        }
       }
 
       // Center
@@ -193,7 +215,27 @@ Rectangle {
       Rectangle {
         Layout.preferredWidth: 350
         Layout.fillHeight: true
-        color: "red"
+        color: "transparent"
+
+        ColumnLayout {
+          height: parent.height
+          width: parent.width
+          anchors.margins: 10
+          spacing: 10
+
+          Rectangle {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            color: Config.md3.surface_container
+            radius: 14
+          }
+          Rectangle {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            color: Config.md3.surface_container
+            radius: 14
+          }
+        }
       }
     }
   }
