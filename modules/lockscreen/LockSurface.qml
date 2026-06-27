@@ -42,8 +42,7 @@ Rectangle {
   Image {
     id: background
     anchors.fill: parent
-    // source: Quickshell.env("HOME") + "/dotfiles/wallpaper.png"
-    source: "/home/theophile/dotfiles/wallpaper.png"
+    source: Quickshell.env("HOME") + "/.cache/current_wallpaper/current.jpg"
     layer.enabled: true
     layer.effect: MultiEffect {
       blurEnabled: true
