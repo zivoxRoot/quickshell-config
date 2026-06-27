@@ -18,6 +18,10 @@ Rectangle {
 
   property bool imageOpen: false
 
+  function toggleImageOpen() {
+    imageOpen = !imageOpen
+  }
+
   signal clicked()
 
   color: selected ? Config.md3.secondary_container : Config.md3.surface
@@ -119,6 +123,7 @@ Rectangle {
         }
 
         RowLayout {
+          visible: preview.source.toString() !== ""
 
           // Image preview
           Rectangle {
@@ -133,7 +138,7 @@ Rectangle {
               radius: 8
 
               Image {
-                visible: source.toString() !== ""
+                id: preview
                 anchors.fill: parent
                 fillMode: Image.PreserveAspectCrop
                 source: root.notification.appIcon
