@@ -66,14 +66,8 @@ Scope {
     onNotification: n => {
       n.tracked = true
       history.insert(0, {
-        summary: n.summary,
-        body: n.body,
-        appName: n.appName,
-        appIcon: n.appIcon,
-        image: n.image,
-        urgency: n.urgency,
+        notification: n,
         timestamp: Date.now(),
-        time: Qt.formatDateTime(new Date(), "HH:mm")
       })
     }
   }
@@ -262,10 +256,7 @@ Scope {
                   required property int index
                   required property var modelData
 
-                  summary: modelData.summary
-                  body: modelData.body
-                  icon: modelData.image || modelData.appIcon
-                  urgency: modelData.urgency
+                  notification: modelData.notification
 
                   popupMode: false
                   width: notificationsColumn.width
@@ -306,10 +297,7 @@ Scope {
           required property var modelData
           Layout.fillWidth: true
 
-          summary: modelData.summary
-          body: modelData.body
-          icon: modelData.image || modelData.appIcon
-          urgency: modelData.urgency
+          notification: modelData
 
           popupMode: true
           selected: false

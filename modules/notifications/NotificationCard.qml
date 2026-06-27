@@ -8,10 +8,7 @@ import "../../config"
 Rectangle {
   id: root
 
-  property string summary
-  property string body
-  property string icon
-  property int urgency
+  property var notification
 
   property bool popupMode
   property bool selected: false
@@ -30,7 +27,7 @@ Rectangle {
   }
 
   Timer {
-    running: popupMode && urgency !== NotificationUrgency.Critical && !hover.hovered
+    running: popupMode && notification.urgency !== NotificationUrgency.Critical && !hover.hovered
     interval: 2000
     onTriggered: root.clicked()
   }
@@ -56,7 +53,7 @@ Rectangle {
         id: image
         anchors.fill: parent
         fillMode: Image.PreserveAspectCrop
-        source: root.icon
+        source: root.notification.image || root.notification.appIcon
       }
     }
 
@@ -68,7 +65,7 @@ Rectangle {
 
         // Title
         Text {
-          text: root.summary
+          text: root.notification.summary
           color: selected ? Config.md3.on_secondary_container : Config.md3.on_surface
           font {
             family: Config.fontFamily
@@ -95,12 +92,52 @@ Rectangle {
       // Body
       Text {
         Layout.fillWidth: true
-        text: root.body
+        text: root.notification.body
         visible: text !== ""
         color: selected ? Config.md3.on_secondary_container : Config.md3.on_surface
         font.family: Config.fontFamily
         font.pixelSize: Config.fontSize
         wrapMode: Text.WordWrap
+      }
+
+      RowLayout {
+        Layout.fillWidth: true
+
+        Repeater {
+          model: root.notification.actions
+
+          Rectangle {
+            required property var modelData
+            height: action.height + 10
+            width: action.width + 15
+            color: actionHover.hovered ? Config.md3.primary : "transparent"
+            radius: height / 2
+
+            Behavior on color {
+              ColorAnimation { duration: 150 }
+            }
+
+            HoverHandler {
+              id: actionHover
+            }
+
+            MouseArea {
+              anchors.fill: parent
+              cursorShape: Qt.PointingHandCursor
+              onClicked: modelData.invoke()
+            }
+
+            Text {
+              anchors.centerIn: parent
+              id: action
+              text: modelData.text
+              color: selected ? (actionHover.hovered ? Config.md3.on_primary : Config.md3.on_secondary_container) : (actionHover.hovered ? Config.md3.on_primary : Config.md3.on_surface)
+              font.family: Config.fontFamily
+              font.pixelSize: Config.fontSize
+              wrapMode: Text.WordWrap
+            }
+          }
+        }
       }
     }
   }
