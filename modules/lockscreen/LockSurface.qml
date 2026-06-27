@@ -131,14 +131,14 @@ Rectangle {
                   Text {
                     text: Qt.formatTime(Time.time, "h")
                     color: Config.md3.primary
-                    font.pixelSize: 46
+                    font.pixelSize: 66
                     font.weight: 900
                   }
 
                   Text {
                     text: ":"
                     color: Config.md3.tertiary
-                    font.pixelSize: 46
+                    font.pixelSize: 66
                     font.weight: 900
                   }
 
@@ -146,7 +146,7 @@ Rectangle {
                   Text {
                     text: Qt.formatTime(Time.time, "mm")
                     color: Config.md3.primary
-                    font.pixelSize: 46
+                    font.pixelSize: 66
                     font.weight: 900
                   }
 
@@ -154,7 +154,7 @@ Rectangle {
                   Text {
                     text: Qt.formatTime(Time.time, "AP")
                     color: Config.md3.tertiary
-                    font.pixelSize: 46
+                    font.pixelSize: 66
                     font.weight: 900
                   }
                 }
