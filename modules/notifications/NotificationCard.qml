@@ -2,6 +2,7 @@ import QtQuick.Effects
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Notifications
+import Quickshell.Widgets
 
 import "../../config"
 
@@ -51,12 +52,19 @@ Rectangle {
       Layout.preferredHeight: 36
       Layout.preferredWidth: 36
       Layout.alignment: Qt.AlignTop
+      color: "transparent"
 
-      Image {
-        id: appIcon
-        anchors.fill: parent
-        fillMode: Image.PreserveAspectCrop
-        source: root.notification.image
+      ClippingWrapperRectangle {
+        height: parent.height
+        width: parent.width
+        radius: height / 2
+
+        Image {
+          id: appIcon
+          anchors.fill: parent
+          fillMode: Image.PreserveAspectCrop
+          source: root.notification.image
+        }
       }
     }
 
@@ -117,14 +125,21 @@ Rectangle {
             visible: !imageOpen
             width: 40
             height: 40
+            color: "transparent"
 
-            Image {
-              visible: source.toString() !== ""
-              anchors.fill: parent
-              fillMode: Image.PreserveAspectCrop
-              source: root.notification.appIcon
-              asynchronous: true
-              smooth: true
+            ClippingWrapperRectangle {
+              height: parent.height
+              width: parent.width
+              radius: 8
+
+              Image {
+                visible: source.toString() !== ""
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectCrop
+                source: root.notification.appIcon
+                asynchronous: true
+                smooth: true
+              }
             }
           }
 
