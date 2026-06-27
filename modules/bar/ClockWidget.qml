@@ -4,7 +4,7 @@ import "../../services/time"
 import "../../config"
 
 Text {
-  text: Time.time
+  text: Qt.formatDateTime(Time.time, "hh:mm")
   color: Config.md3.on_background
 
   font {

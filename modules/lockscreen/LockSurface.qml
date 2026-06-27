@@ -6,6 +6,7 @@ import QtQuick.Controls
 import Quickshell.Wayland
 
 import "../../config"
+import "../../services/time"
 
 Rectangle {
   id: root
@@ -72,7 +73,7 @@ Rectangle {
 
       // Left
       Rectangle {
-        Layout.fillWidth: true
+        Layout.preferredWidth: 350
         Layout.fillHeight: true
         color: "green"
       }
@@ -98,20 +99,50 @@ Rectangle {
               ColumnLayout {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.verticalCenter
+                Layout.alignment: Qt.AlignHCenter
 
-                Text {
+                RowLayout {
                   anchors.horizontalCenter: parent.horizontalCenter
-                  text: "11:28 AM"
-                  color: Config.md3.on_background
-                  font.pixelSize: 46
-                  font.family: Config.fontFamily
+                  spacing: 5
+
+                  // Hour
+                  Text {
+                    text: Qt.formatTime(Time.time, "h")
+                    color: Config.md3.primary
+                    font.pixelSize: 46
+                    font.weight: 900
+                  }
+
+                  Text {
+                    text: ":"
+                    color: Config.md3.tertiary
+                    font.pixelSize: 46
+                    font.weight: 900
+                  }
+
+                  // Minutes
+                  Text {
+                    text: Qt.formatTime(Time.time, "mm")
+                    color: Config.md3.primary
+                    font.pixelSize: 46
+                    font.weight: 900
+                  }
+
+                  // AM/PM
+                  Text {
+                    text: Qt.formatTime(Time.time, "AP")
+                    color: Config.md3.tertiary
+                    font.pixelSize: 46
+                    font.weight: 900
+                  }
                 }
 
                 Text {
                   anchors.horizontalCenter: parent.horizontalCenter
-                  text: "Monday, 26 January 2026"
-                  color: Config.md3.on_background
+                  text: Qt.formatDateTime(Time.time, "dddd, d MMMM yyyy")
+                  color: Config.md3.secondary
                   font.pixelSize: 24
+                  font.weight: 600
                   font.family: Config.fontFamily
                 }
               }
@@ -160,7 +191,7 @@ Rectangle {
 
       // Right
       Rectangle {
-        Layout.fillWidth: true
+        Layout.preferredWidth: 350
         Layout.fillHeight: true
         color: "red"
       }
