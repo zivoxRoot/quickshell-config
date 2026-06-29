@@ -10,6 +10,7 @@ import "modules/volume"
 import "modules/launcher"
 import "modules/lockscreen"
 import "modules/wallpaper_switcher"
+import "modules/music"
 import "modules/morpheBar"
 
 Scope {
@@ -23,5 +24,6 @@ Scope {
   Launcher {}
   Switcher {}
   Lockscreen {}
+  Music {}
   // MorpheBar {}
 }
