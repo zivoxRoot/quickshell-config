@@ -8,6 +8,7 @@ import "../../modules/wifi"
 import "../../modules/bluetooth"
 import "../../modules/music"
 import "../../modules/logoutMenu"
+import "../../modules/launcher"
 
 import "../../config"
 import "../../services/time"
@@ -52,6 +53,10 @@ ShellRoot {
     function logout(): void {
       toggle("logout")
     }
+
+    function launcher(): void {
+      toggle("launcher")
+    }
   }
 
   Component {
@@ -72,6 +77,11 @@ ShellRoot {
   Component {
     id: logoutMenu
     LogoutMenu {}
+  }
+
+  Component {
+    id: launcherMenu
+    Launcher {}
   }
 
   // Centered pill that morphes into other elements
@@ -131,6 +141,7 @@ ShellRoot {
           currentSurface === "bluetooth" ? bluetoothMenu :
           currentSurface === "music" ? musicMenu :
           currentSurface === "logout" ? logoutMenu :
+          currentSurface === "launcher" ? launcherMenu :
           null
 
         onItemChanged: {

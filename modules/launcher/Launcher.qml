@@ -8,19 +8,13 @@ import QtQuick.Layouts
 
 import "../../config"
 
-PanelWindow {
+FocusScope {
   id: root
-  visible: false
-  anchors { top: true }
-  margins { top: 48 }
-  color: "transparent"
   implicitHeight: Math.min(
     maxPopupHeight,
     contentColumn.implicitHeight + 10
   )
   implicitWidth: 400
-  exclusionMode: ExclusionMode.Ignore
-  WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
   property int focusedIndex: 0
   readonly property int maxPopupHeight: 600
@@ -35,19 +29,6 @@ PanelWindow {
     focusedIndex = 0
   }
 
-  IpcHandler {
-    target: "launcher"
-    function toggle(): void {
-      root.visible = !root.visible
-
-      if (root.visible) {
-        focusedIndex = 0
-        input.text = ""
-        input.forceActiveFocus()
-      }
-    }
-  }
-  
   // Autoscroll
   onFocusedIndexChanged: {
     const item = repeater.itemAt(focusedIndex)
@@ -67,39 +48,33 @@ PanelWindow {
     }
   }
 
-  Item {
-    id: focusItem
-    anchors.fill: parent
-    focus: true
+  Keys.onPressed: event => {
+    switch (event.key) {
+    // Close with `escape`
+    case Qt.Key_Escape:
+      root.visible = false
+      focusedIndex = 0
+      break
 
-    Keys.onPressed: event => {
-      switch (event.key) {
-      // Close with `escape`
-      case Qt.Key_Escape:
-        root.visible = false
-        focusedIndex = 0
-        break
+    // Navigate with vim keys
+    case Qt.Key_J:
+      focusedIndex = Math.min(focusedIndex + 1, repeater.count - 1)
+      break
+    case Qt.Key_K:
+      focusedIndex = Math.max(focusedIndex - 1, 0)
+      break
 
-      // Navigate with vim keys
-      case Qt.Key_J:
-        focusedIndex = Math.min(focusedIndex + 1, repeater.count - 1)
-        break
-      case Qt.Key_K:
-        focusedIndex = Math.max(focusedIndex - 1, 0)
-        break
+    // Launch with `space` or `return`
+    case Qt.Key_Return:
+    case Qt.Key_Space:
+      launch(focusedIndex)
+      break
 
-      // Launch with `space` or `return`
-      case Qt.Key_Return:
-      case Qt.Key_Space:
-        launch(focusedIndex)
-        break
-
-      // Go in insert mode with `i`
-      case Qt.Key_I:
-        focusedIndex = 0
-        input.forceActiveFocus()
-        break
-      }
+    // Go in insert mode with `i`
+    case Qt.Key_I:
+      focusedIndex = 0
+      input.forceActiveFocus()
+      break
     }
   }
 
