@@ -10,6 +10,7 @@ import "../../modules/music"
 import "../../modules/logoutMenu"
 import "../../modules/launcher"
 import "../../modules/wallpaper_switcher"
+import "../../modules/control_center"
 
 import "../../config"
 import "../../services/time"
@@ -62,6 +63,10 @@ ShellRoot {
     function wallpaper_switcher(): void {
       toggle("wallpaper_switcher")
     }
+
+    function control_center(): void {
+      toggle("control_center")
+    }
   }
 
   Component {
@@ -92,6 +97,11 @@ ShellRoot {
   Component {
     id: wallpaperSwitcherMenu
     Switcher {}
+  }
+
+  Component {
+    id: controlCenterMenu
+    ControlCenter {}
   }
 
   // Centered pill that morphes into other elements
@@ -153,6 +163,7 @@ ShellRoot {
           currentSurface === "logout" ? logoutMenu :
           currentSurface === "launcher" ? launcherMenu :
           currentSurface === "wallpaper_switcher" ? wallpaperSwitcherMenu :
+          currentSurface === "control_center" ? controlCenterMenu :
           null
 
         onItemChanged: {
