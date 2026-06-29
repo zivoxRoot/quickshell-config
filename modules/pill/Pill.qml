@@ -9,6 +9,7 @@ import "../../modules/bluetooth"
 import "../../modules/music"
 import "../../modules/logoutMenu"
 import "../../modules/launcher"
+import "../../modules/wallpaper_switcher"
 
 import "../../config"
 import "../../services/time"
@@ -57,6 +58,10 @@ ShellRoot {
     function launcher(): void {
       toggle("launcher")
     }
+
+    function wallpaper_switcher(): void {
+      toggle("wallpaper_switcher")
+    }
   }
 
   Component {
@@ -82,6 +87,11 @@ ShellRoot {
   Component {
     id: launcherMenu
     Launcher {}
+  }
+
+  Component {
+    id: wallpaperSwitcherMenu
+    Switcher {}
   }
 
   // Centered pill that morphes into other elements
@@ -142,6 +152,7 @@ ShellRoot {
           currentSurface === "music" ? musicMenu :
           currentSurface === "logout" ? logoutMenu :
           currentSurface === "launcher" ? launcherMenu :
+          currentSurface === "wallpaper_switcher" ? wallpaperSwitcherMenu :
           null
 
         onItemChanged: {
