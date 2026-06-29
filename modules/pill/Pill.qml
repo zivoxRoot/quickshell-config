@@ -5,6 +5,8 @@ import QtQuick
 import QtQuick.Layouts
 
 import "../../modules/wifi"
+import "../../modules/bluetooth"
+
 import "../../config"
 import "../../services/time"
 
@@ -32,14 +34,24 @@ ShellRoot {
 
   IpcHandler {
     target: "pill"
+
     function wifi(): void {
       toggle("wifi")
+    }
+
+    function bluetooth(): void {
+      toggle("bluetooth")
     }
   }
 
   Component {
     id: wifiMenu
     Wifi {}
+  }
+
+  Component {
+    id: bluetoothMenu
+    Bluetooth {}
   }
 
   // Centered pill that morphes into other elements
@@ -82,6 +94,7 @@ ShellRoot {
 
         sourceComponent:
           currentSurface === "wifi" ? wifiMenu :
+          currentSurface === "bluetooth" ? bluetoothMenu :
           null
 
         onItemChanged: {

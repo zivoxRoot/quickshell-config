@@ -8,19 +8,13 @@ import QtQuick.Layouts
 
 import "../../config"
 
-PanelWindow {
+FocusScope {
   id: root
-  visible: false
-  anchors { top: true; right: true }
-  margins { top: 48; right: 10 }
-  color: "transparent"
   implicitHeight: Math.min(
     maxPopupHeight,
     contentColumn.implicitHeight + 10
   )
   implicitWidth: 380
-  exclusionMode: ExclusionMode.Ignore
-  WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
   readonly property int maxPopupHeight: 600
   readonly property var adapter: typeof Bluetooth !== "undefined" && Bluetooth ? Bluetooth.defaultAdapter : null
@@ -109,67 +103,53 @@ PanelWindow {
     onTriggered: if (root.adapter) root.adapter.discovering = false
   }
 
-  IpcHandler {
-    target: "bluetooth"
-    function toggle(): void {
-      if (root.visible) focusedIndex = 0
-      root.visible = !root.visible
-    }
-  }
+  Keys.onPressed: event => {
+    switch (event.key) {
+    // Close with `escape`
+    case Qt.Key_Escape:
+      root.visible = false
+      focusedIndex = 0
+      break
 
-  Item {
-    id: focusItem
-    anchors.fill: parent
-    focus: true
+    // Navigate with vim keys
+    case Qt.Key_J:
+      focusedIndex = Math.min(focusedIndex + 1, devices?.length - 1)
+      break
+    case Qt.Key_K:
+      focusedIndex = Math.max(focusedIndex - 1, 0)
+      break
 
-    Keys.onPressed: event => {
-      switch (event.key) {
-      // Close with `escape`
-      case Qt.Key_Escape:
-        root.visible = false
-        focusedIndex = 0
-        break
+    // (Dis)connect with `enter` or `space`
+    case Qt.Key_Return:
+    case Qt.Key_Space:
+      const device = root.sortedDevices[focusedIndex]
+      if (!device) return;
+      if (device.connected) device.disconnect();
+      else if (device.pairing) device.cancelPair();
+      else device.connect();
+      break
 
-      // Navigate with vim keys
-      case Qt.Key_J:
-        focusedIndex = Math.min(focusedIndex + 1, devices?.length - 1)
-        break
-      case Qt.Key_K:
-        focusedIndex = Math.max(focusedIndex - 1, 0)
-        break
+    // Forget device with `D`
+    case Qt.Key_D:
+      const dev = root.sortedDevices[focusedIndex]
+      if (!dev) return;
+      dev.forget()
+      break
 
-      // (Dis)connect with `enter` or `space`
-      case Qt.Key_Return:
-      case Qt.Key_Space:
-        const device = root.sortedDevices[focusedIndex]
-        if (!device) return;
-        if (device.connected) device.disconnect();
-        else if (device.pairing) device.cancelPair();
-        else device.connect();
-        break
+    // Search with `S`
+    case Qt.Key_S:
+      if (!root.adapter) return;
+      root.adapter.discovering = !root.adapter.discovering;
+      if (root.adapter.discovering)
+        scanTimer.restart()
+      else
+        scanTimer.stop()
+      break
 
-      // Forget device with `D`
-      case Qt.Key_D:
-        const dev = root.sortedDevices[focusedIndex]
-        if (!dev) return;
-        dev.forget()
-        break
-
-      // Search with `S`
-      case Qt.Key_S:
-        if (!root.adapter) return;
-        root.adapter.discovering = !root.adapter.discovering;
-        if (root.adapter.discovering)
-          scanTimer.restart()
-        else
-          scanTimer.stop()
-        break
-
-      // Toggle bluetooth with `T`
-      case Qt.Key_T:
-        if (root.adapter) root.adapter.enabled = !root.adapter.enabled
-        break
-      }
+    // Toggle bluetooth with `T`
+    case Qt.Key_T:
+      if (root.adapter) root.adapter.enabled = !root.adapter.enabled
+      break
     }
   }
 
