@@ -8,16 +8,10 @@ import Quickshell.Services.Mpris
 
 import "../../config"
 
-PanelWindow {
+FocusScope {
   id: root
-  visible: false
-  anchors { top: true }
-  margins { top: 48 }
-  color: "transparent"
   implicitHeight: 120
   implicitWidth: 400
-  exclusionMode: ExclusionMode.Ignore
-  WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
   property int index: 0
   readonly property list<MprisPlayer> players: Mpris.players.values
@@ -53,56 +47,43 @@ PanelWindow {
     else return ""
   }
 
-  IpcHandler {
-    target: "music"
-    function toggle() {
-      root.visible = !root.visible
-    }
-  }
+  Keys.onPressed: event => {
+    switch (event.key) {
 
-  // Focus item
-  Item {
-    id: focusItem
-    anchors.fill: parent
-    focus: true
+    // Close with `escape`
+    case Qt.Key_Escape:
+      root.visible = false
+      focusedIndex = 0
+      break
 
-    Keys.onPressed: event => {
-      switch (event.key) {
-      // Close with `escape`
-      case Qt.Key_Escape:
-        root.visible = false
-        focusedIndex = 0
-        break
+    // Toggle playing state with `space` and `K`
+    case Qt.Key_Space:
+    case Qt.Key_K:
+      active.canTogglePlaying ? active.togglePlaying() : null
+      break
 
-      // Toggle playing state with `space` and `K`
-      case Qt.Key_Space:
-      case Qt.Key_K:
-        active.canTogglePlaying ? active.togglePlaying() : null
-        break
+    // Next/Previous track with `N` and `P`
+    case Qt.Key_P:
+      active.canGoPrevious ? active.previous() : null
+      break
 
-      // Next/Previous track with `N` and `P`
-      case Qt.Key_P:
-        active.canGoPrevious ? active.previous() : null
-        break
+    case Qt.Key_N:
+      active.canGoNext ? active.next() : null
+      break
 
-      case Qt.Key_N:
-        active.canGoNext ? active.next() : null
-        break
+    // Move in song advancement with `H` and `L`
+    case Qt.Key_L:
+      active.seek(10)
+      break
 
-      // Move in song advancement with `H` and `L`
-      case Qt.Key_L:
-        active.seek(10)
-        break
+    case Qt.Key_H:
+      active.seek(-10)
+      break
 
-      case Qt.Key_H:
-        active.seek(-10)
-        break
-
-      // Switch player with `S`
-      case Qt.Key_S:
-        nextPlayer()
-        break
-      }
+    // Switch player with `S`
+    case Qt.Key_S:
+      nextPlayer()
+      break
     }
   }
 

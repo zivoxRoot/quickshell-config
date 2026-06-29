@@ -6,6 +6,7 @@ import QtQuick.Layouts
 
 import "../../modules/wifi"
 import "../../modules/bluetooth"
+import "../../modules/music"
 
 import "../../config"
 import "../../services/time"
@@ -42,6 +43,10 @@ ShellRoot {
     function bluetooth(): void {
       toggle("bluetooth")
     }
+
+    function music(): void {
+      toggle("music")
+    }
   }
 
   Component {
@@ -52,6 +57,11 @@ ShellRoot {
   Component {
     id: bluetoothMenu
     Bluetooth {}
+  }
+
+  Component {
+    id: musicMenu
+    Music {}
   }
 
   // Centered pill that morphes into other elements
@@ -95,6 +105,7 @@ ShellRoot {
         sourceComponent:
           currentSurface === "wifi" ? wifiMenu :
           currentSurface === "bluetooth" ? bluetoothMenu :
+          currentSurface === "music" ? musicMenu :
           null
 
         onItemChanged: {
