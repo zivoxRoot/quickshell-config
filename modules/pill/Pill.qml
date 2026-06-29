@@ -78,6 +78,20 @@ ShellRoot {
       implicitHeight: loader.item ? loader.item.implicitHeight : pillHeight
       implicitWidth: loader.item ? loader.item.implicitWidth : pillWidth
 
+      Behavior on height {
+        NumberAnimation {
+          duration: 180
+          easing.type: Easing.OutCubic
+        }
+      }
+
+      Behavior on width {
+        NumberAnimation {
+          duration: 180
+          easing.type: Easing.OutCubic
+        }
+      }
+
       Rectangle {
         anchors.fill: parent
         color: Config.md3.background
