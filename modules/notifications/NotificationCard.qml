@@ -16,12 +16,6 @@ Rectangle {
   property bool showRelativeTime: false
   property string relativeTimeText: ""
 
-  property bool imageOpen: false
-
-  function toggleImageOpen() {
-    imageOpen = !imageOpen
-  }
-
   signal clicked()
 
   color: selected ? Config.md3.secondary_container : Config.md3.surface
@@ -67,7 +61,7 @@ Rectangle {
           id: appIcon
           anchors.fill: parent
           fillMode: Image.PreserveAspectCrop
-          source: root.notification.image
+          source: root.notification.image || root.notification.appIcon
         }
       }
     }
@@ -121,70 +115,6 @@ Rectangle {
             wrapMode: Text.WordWrap
           }
         }
-
-        RowLayout {
-          visible: preview.source.toString() !== ""
-
-          // Image preview
-          Rectangle {
-            visible: !imageOpen
-            width: 40
-            height: 40
-            color: "transparent"
-
-            ClippingWrapperRectangle {
-              height: parent.height
-              width: parent.width
-              radius: 8
-
-              Image {
-                id: preview
-                anchors.fill: parent
-                fillMode: Image.PreserveAspectCrop
-                source: root.notification.appIcon
-                asynchronous: true
-                smooth: true
-              }
-            }
-          }
-
-          // Image preview toggle button
-          Rectangle {
-            width: 20
-            height: 20
-            color: Config.md3.primary
-            radius: height / 2
-
-            Text {
-              text: imageOpen ? "" : ""
-              anchors.centerIn: parent
-              color: Config.md3.on_primary
-              font.family: Config.fontFamily
-              font.pixelSize: Config.fontSize + 4
-            }
-
-            MouseArea {
-              anchors.fill: parent
-              cursorShape: Qt.PointingHandCursor
-              onClicked: imageOpen = !imageOpen
-            }
-          }
-        }
-      }
-
-      // Image
-      Image {
-        visible: source.toString() !== "" && imageOpen
-        width: parent.width
-        Layout.fillWidth: true
-        fillMode: Image.PreserveAspectFit
-        source: root.notification.appIcon
-        asynchronous: true
-        smooth: true
-        readonly property real aspectRatio: (implicitWidth > 0 && implicitHeight > 0
-          ? implicitWidth / implicitHeight
-          : 16 / 9)
-        Layout.preferredHeight: width / aspectRatio
       }
 
       // Actions

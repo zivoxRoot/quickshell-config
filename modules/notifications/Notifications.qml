@@ -118,10 +118,6 @@ Scope {
             root.centerOpen = false
             break
 
-          case Qt.Key_Space:
-            repeater.itemAt(focusedIndex).toggleImageOpen()
-            break
-
           // Navigate with vim keybinds
           case Qt.Key_J:
             if (focusedIndex >= history.count - 1) {
