@@ -7,6 +7,7 @@ import QtQuick.Layouts
 import "../../modules/wifi"
 import "../../modules/bluetooth"
 import "../../modules/music"
+import "../../modules/logoutMenu"
 
 import "../../config"
 import "../../services/time"
@@ -47,6 +48,10 @@ ShellRoot {
     function music(): void {
       toggle("music")
     }
+
+    function logout(): void {
+      toggle("logout")
+    }
   }
 
   Component {
@@ -62,6 +67,11 @@ ShellRoot {
   Component {
     id: musicMenu
     Music {}
+  }
+
+  Component {
+    id: logoutMenu
+    LogoutMenu {}
   }
 
   // Centered pill that morphes into other elements
@@ -120,6 +130,7 @@ ShellRoot {
           currentSurface === "wifi" ? wifiMenu :
           currentSurface === "bluetooth" ? bluetoothMenu :
           currentSurface === "music" ? musicMenu :
+          currentSurface === "logout" ? logoutMenu :
           null
 
         onItemChanged: {

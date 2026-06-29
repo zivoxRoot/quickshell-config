@@ -7,21 +7,14 @@ import QtQuick.Controls
 
 import "../../config"
 
-PanelWindow {
+FocusScope {
   id: root
-  anchors { top: true }
-  margins { top: 48 }
-  color: "transparent"
-  visible: false
   implicitHeight: layout.implicitHeight
   implicitWidth: layout.implicitWidth
 
   property int focusedIndex: 0
 
-  exclusionMode: ExclusionMode.Ignore
-  WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-
-    property var actions: [
+  property var actions: [
     {
       icon: "󰌾",
       name: "Lock",
@@ -54,61 +47,46 @@ PanelWindow {
     },
   ]
 
-  
-  Item {
-    id: focusItem
-    anchors.fill: parent
-    focus: true
+  Keys.onPressed: event => {
+    switch (event.key) {
+      // Close logout menu
+      case Qt.Key_Escape:
+        root.visible = false
+        root.focusedIndex = false
+        break
 
-    Keys.onPressed: event => {
-      switch (event.key) {
-        // Close logout menu
-        case Qt.Key_Escape:
-          root.visible = false
-          root.focusedIndex = false
-          break
+      // Navigate buttons with vim keys and tabs
+      case Qt.Key_Backtab:
+      case Qt.Key_K:
+      case Qt.Key_H:
+        focusedIndex = Math.max(
+          focusedIndex - 1,
+          0
+        )
+        break
 
-        // Navigate buttons with vim keys and tabs
-        case Qt.Key_Backtab:
-        case Qt.Key_K:
-        case Qt.Key_H:
-          focusedIndex = Math.max(
-            focusedIndex - 1,
-            0
-          )
-          break
+      case Qt.Key_Tab:
+      case Qt.Key_J:
+      case Qt.Key_L:
+        focusedIndex = Math.min(
+          focusedIndex + 1,
+          actions.length - 1
+        )
+        break
 
-        case Qt.Key_Tab:
-        case Qt.Key_J:
-        case Qt.Key_L:
-          focusedIndex = Math.min(
-            focusedIndex + 1,
-            actions.length - 1
-          )
-          break
-
-        // Click a button
-        case Qt.Key_Return:
-        case Qt.Key_Enter:
-          launcher.command = root.actions[focusedIndex].command
-          launcher.running = true
-          root.visible = false
-          break
-      }
+      // Click a button
+      case Qt.Key_Return:
+      case Qt.Key_Enter:
+        launcher.command = root.actions[focusedIndex].command
+        launcher.running = true
+        root.visible = false
+        break
     }
   }
 
   Process {
     id: launcher
     running: false
-  }
-  
-  IpcHandler {
-    target: "logout"
-    function toggle(): void {
-      root.focusedIndex = false
-      root.visible = !root.visible
-    }
   }
 
   // Actions list
