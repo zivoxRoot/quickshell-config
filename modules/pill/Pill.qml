@@ -5,6 +5,8 @@ import QtQuick
 import QtQuick.Layouts
 
 import "../../modules/wifi"
+import "../../config"
+import "../../services/time"
 
 ShellRoot {
   readonly property int pillHeight: 35
@@ -50,9 +52,23 @@ ShellRoot {
       exclusionMode: ExclusionMode.Ignore
       anchors { top: true; }
       margins { top: 5; }
-      color: "green"
+      color: "transparent"
       implicitHeight: loader.item ? loader.item.implicitHeight : pillHeight
       implicitWidth: loader.item ? loader.item.implicitWidth : pillWidth
+
+      Rectangle {
+        anchors.fill: parent
+        color: Config.md3.background
+        radius: height / 2
+
+        Text {
+          text: Qt.formatDateTime(Time.time, "hh:mm")
+          anchors.centerIn: parent
+          color: Config.md3.on_background
+          font.family: Config.fontFamily
+          font.pixelSize: Config.fontSize
+        }
+      }
 
       WlrLayershell.keyboardFocus:
         currentSurface !== "" ?
