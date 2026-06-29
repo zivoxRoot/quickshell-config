@@ -3,28 +3,24 @@ import QtQuick.Controls
 import QtQml.Models
 import Quickshell
 import Quickshell.Networking
-import Quickshell.Wayland
 import Quickshell.Io
 import QtQuick.Layouts
 
 import "../../config"
 
-PanelWindow {
+FocusScope {
   id: root
-  visible: false
-  anchors { top: true; right: true }
-  margins { top: 48; right: 10 }
-  color: "transparent"
+  visible: true
   implicitHeight: Math.min(
     maxPopupHeight,
     contentColumn.implicitHeight + 10
   )
   implicitWidth: 380
-  exclusionMode: ExclusionMode.Ignore
-  WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
   property int focusedIndex: 0
   readonly property int maxPopupHeight: 600
+  focus: true
+  activeFocusOnTab: true
 
   property var passwordNetwork: null
   property bool showPasswordInput: false
@@ -47,7 +43,9 @@ PanelWindow {
     running: false
     stdout: StdioCollector { onStreamFinished: root.ethIp = this.text.trim() }
   }
-  Component.onCompleted: ipProc.running = true
+  Component.onCompleted: {
+    ipProc.running = true
+  }
   onWiredChanged: ipProc.running = true
 
   Timer {
@@ -148,71 +146,59 @@ PanelWindow {
     onTriggered: if (Networking) wifiDev.scannerEnabled = false
   }
 
-  IpcHandler {
-    target: "wifi"
-    function toggle(): void {
-      if (root.visible) focusedIndex = 0
-      root.visible = !root.visible
-    }
-  }
+  // Keyboard shortcuts
+  Keys.onPressed: event => {
+    switch (event.key) {
 
-  Item {
-    id: focusItem
-    anchors.fill: parent
-    focus: true
+    // Close with `escape`
+    case Qt.Key_Escape:
+      root.visible = false
+      focusedIndex = 0
+      break
 
-    Keys.onPressed: event => {
-      switch (event.key) {
-      // Close with `escape`
-      case Qt.Key_Escape:
-        root.visible = false
-        focusedIndex = 0
-        break
+    // Navigate with vim keys
+    case Qt.Key_J:
+      focusedIndex = Math.min(focusedIndex + 1, root.wifiNetsSorted?.length - 1)
+      break
+    case Qt.Key_K:
+      focusedIndex = Math.max(focusedIndex - 1, 0)
+      break
 
-      // Navigate with vim keys
-      case Qt.Key_J:
-        focusedIndex = Math.min(focusedIndex + 1, root.wifiNetsSorted?.length - 1)
-        break
-      case Qt.Key_K:
-        focusedIndex = Math.max(focusedIndex - 1, 0)
-        break
-
-      // (Dis)connect with `enter` or `space`
-      case Qt.Key_Return:
-      case Qt.Key_Space:
-        const net = root.wifiNetsSorted[focusedIndex]
-        if (!net) return;
-        if (net.connected && typeof net.disconnect === "function") net.disconnect()
-        else if (typeof net.connect === "function") {
-          passwordNetwork = net
-          awaitingPassword = true
-          net.connect()
-        }
-        break
-
-      // Forget device with `D`
-      case Qt.Key_D:
-        const network = root.wifiNetsSorted[focusedIndex]
-        if (!network) return;
-        focusedIndex = 0
-        network.forget()
-        break
-
-      // Search with `S`
-      case Qt.Key_S:
-        if (!Networking.wifiEnabled) return;
-        wifiDev.scannerEnabled = !wifiDev.scannerEnabled;
-        if (wifiDev.scannerEnabled)
-          scanTimer.restart()
-        else
-          scanTimer.stop()
-        break
-
-      // Toggle bluetooth with `T`
-      case Qt.Key_T:
-        if (typeof Networking !== "undefined" && Networking) Networking.wifiEnabled = !Networking.wifiEnabled
-        break
+    // (Dis)connect with `enter` or `space`
+    case Qt.Key_Return:
+    case Qt.Key_Space:
+      const net = root.wifiNetsSorted[focusedIndex]
+      if (!net) return;
+      if (net.connected && typeof net.disconnect === "function") net.disconnect()
+      else if (typeof net.connect === "function") {
+        passwordNetwork = net
+        awaitingPassword = true
+        net.connect()
       }
+      break
+
+    // Forget device with `D`
+    case Qt.Key_D:
+      const network = root.wifiNetsSorted[focusedIndex]
+      if (!network) return;
+      focusedIndex = 0
+      network.forget()
+      break
+
+    // Search with `S`
+    case Qt.Key_S:
+      if (!Networking.wifiEnabled) return;
+      wifiDev.scannerEnabled = !wifiDev.scannerEnabled;
+      if (wifiDev.scannerEnabled)
+        scanTimer.restart()
+      else
+        scanTimer.stop()
+      break
+
+    // Toggle wifi with `T`
+    case Qt.Key_T:
+      if (typeof Networking !== "undefined" && Networking) Networking.wifiEnabled = !Networking.wifiEnabled
+      break
     }
   }
 

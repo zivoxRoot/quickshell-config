@@ -11,12 +11,13 @@ import "modules/launcher"
 import "modules/lockscreen"
 import "modules/wallpaper_switcher"
 import "modules/music"
+import "modules/pill"
 
 Scope {
-  Bar {}
+  // Bar {}
   Notifications {}
   LogoutMenu {}
-  Wifi {}
+  // Wifi {}
   Bluetooth {}
   Brightness {}
   Volume {}
@@ -24,4 +25,5 @@ Scope {
   Switcher {}
   Lockscreen {}
   Music {}
+  Pill {}
 }
