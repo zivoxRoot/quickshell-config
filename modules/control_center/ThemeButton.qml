@@ -7,7 +7,7 @@ import "../../config"
 Rectangle {
   color: currentTheme === "light" ? Config.md3.primary : Config.md3.inverse_primary
   height: 42
-  width: 42
+  width: 52
   radius: currentTheme === "light" ? 10 : height / 2
 
   property string currentTheme: themeFile.text

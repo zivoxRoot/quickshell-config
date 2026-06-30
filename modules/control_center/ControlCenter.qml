@@ -77,29 +77,41 @@ FocusScope {
 
       Workspaces {}
 
-      // Date + time
-      RowLayout {
-        spacing: 10
+      Item {
+        Layout.fillWidth: true
+      }
 
-        Text {
-          text: Qt.formatDateTime(Time.time, "ddd d")
-          color: Config.md3.primary
-          font.family: Config.fontFamily
-          font.pixelSize: Config.fontSize
-        }
+      // Date and time
+      ColumnLayout {
+        anchors.centerIn: parent
+        spacing: 10
 
         Text {
           text: Qt.formatDateTime(Time.time, "hh:mm")
           color: Config.md3.on_background
+          anchors.horizontalCenter: parent.horizontalCenter
           font.family: Config.fontFamily
           font.pixelSize: Config.fontSize
         }
+
+        Text {
+          text: Qt.formatDateTime(Time.time, "ddd d MMMM")
+          color: Config.md3.primary
+          anchors.horizontalCenter: parent.horizontalCenter
+          font.family: Config.fontFamily
+          font.pixelSize: Config.fontSize
+        }
+      }
+
+      Item {
+        Layout.fillWidth: true
       }
 
       RowLayout {
         spacing: 10
 
         ThemeButton {}
+        Power {}
       }
     }
   }
