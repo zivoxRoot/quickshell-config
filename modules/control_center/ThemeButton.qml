@@ -5,12 +5,12 @@ import Quickshell.Io
 import "../../config"
 
 Rectangle {
-  color: currentTheme === "light" ? Config.md3.primary : Config.md3.inverse_primary
+  color: currentTheme === "light" ? Config.md3.primary : Config.md3.surface_variant
   height: 42
   width: 52
   radius: currentTheme === "light" ? 10 : height / 2
 
-  property string currentTheme: themeFile.text
+  property var currentTheme: themeFile.text()
 
   function changeTheme() {
     currentTheme = currentTheme === "light" ? "dark" : "light"
@@ -31,7 +31,7 @@ Rectangle {
   Text {
     text: "󰌵"
     anchors.centerIn: parent
-    color: currentTheme === "light" ? Config.md3.on_primary : Config.md3.on_inverse_primary
+    color: currentTheme === "light" ? Config.md3.on_primary : Config.md3.on_surface_variant
     font.family: Config.fontFamily
     font.pixelSize: Config.fontSize + 6
   }
