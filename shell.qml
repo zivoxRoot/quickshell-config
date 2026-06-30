@@ -7,7 +7,8 @@ import "modules/lockscreen"
 import "modules/pill"
 
 Scope {
-  Notifications {}
+  NotificationsCenter {}
+  NotificationsPopup {}
   Brightness {}
   Volume {}
   Lockscreen {}
