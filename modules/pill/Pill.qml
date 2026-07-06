@@ -81,7 +81,7 @@ ShellRoot {
 
   Component {
     id: musicMenu
-    Music {}
+    MusicModule {}
   }
 
   Component {
