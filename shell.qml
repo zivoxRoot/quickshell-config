@@ -14,5 +14,6 @@ Scope {
   Volume {}
   Lockscreen {}
   Clock {}
+  Music {}
   Pill {}
 }
