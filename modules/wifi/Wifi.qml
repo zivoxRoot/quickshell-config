@@ -1,12 +1,10 @@
 import QtQuick
 import QtQuick.Controls
-import QtQml.Models
-import Quickshell
 import Quickshell.Networking
-import Quickshell.Io
 import QtQuick.Layouts
 
 import "../../config"
+import "../../services/wifi"
 
 FocusScope {
   id: root
@@ -25,100 +23,6 @@ FocusScope {
   property var passwordNetwork: null
   property bool showPasswordInput: false
   property bool awaitingPassword: false
-
-  readonly property var devices: (typeof Networking !== "undefined" && Networking && Networking.devices) ? Networking.devices.values : []
-  readonly property var eth: devices.find(function(d) { return d && d.type === DeviceType.Wired && d.connected }) || null
-  readonly property var wifiDev: devices.find(function(d) { return d && d.type === DeviceType.Wifi }) || null
-  readonly property bool wired: eth !== null
-
-  readonly property real ethSpeed: (eth && eth.linkSpeed) ? eth.linkSpeed : 0
-  readonly property real ethSpeedText: ethSpeed > 0
-    ? (ethSpeed >= 1000 ? (ethSpeed / 1000).toFixed(ethSpeed % 1000 === 0 ? 0 : 1) + " Gb/s" : ethSpeed + " Mb/s")
-    : ""
-
-  property string ethIp: ""
-  Process {
-    id: ipProc
-    command: ["sh", "-c", "ip -4 -o addr show scope global up | awk '{for(i=1;i<=NF;i++) if($i==\"inet\"){print $(i+1); exit}}' | cut -d/ -f1"]
-    running: false
-    stdout: StdioCollector { onStreamFinished: root.ethIp = this.text.trim() }
-  }
-  Component.onCompleted: {
-    ipProc.running = true
-  }
-  onWiredChanged: ipProc.running = true
-
-  Timer {
-    interval: 15000
-    running: root.visible
-    repeat: true
-    triggeredOnStart: true
-    onTriggered: ipProc.running = true
-  }
-
-  readonly property bool wifiOn: (typeof Networking !== "undefined" && Networking) ? Networking.wifiEnabled : false
-  readonly property var wifiNets: (wifiDev && wifiDev.networks) ? wifiDev.networks.values : []
-  readonly property var wifiActive: wifiNets.find(function(n) { return n && n.connected }) || null
-  readonly property string wifiSsid: wifiActive ? (wifiActive.name || "") : (wifiOn ? "Not connected" : "Off")
-
-  readonly property var wifiNetsSorted: {
-    var arr = wifiNets.slice()
-    
-    arr.sort(function(a, b) {
-
-      function rank(n) {
-        if (!n) return 99;
-
-        switch (n.state) {
-        case ConnectionState.Connected:
-          return 0;
-
-        case ConnectionState.Connecting:
-          return 1;
-
-        case ConnectionState.Disconnecting:
-          return 2;
-
-        case ConnectionState.Disconnected:
-          return n.known ? 3: 4;
-
-        default:
-          return 5;
-        }
-      }
-
-      const r = rank(a) - rank(b)
-      if (r !== 0) return r
-
-      return (b.signalStrength || 0) - (a.signalStrength || 0)
-    })
-
-    return arr
-  }
-
-  function signalPercent(network) {
-    if (!network) return 0;
-    let s = network.signalStrength
-    if (s <= 1) s *= 100
-    return Math.round(s)
-  }
-
-  function metaFor(net) {
-    if (!net) return "";
-
-    switch (net.state) {
-    case ConnectionState.Connected:
-      return "Connected";
-    case ConnectionState.Connecting:
-      return "Connecting...";
-    case ConnectionState.Disconnecting:
-      return "Disconnecting...";
-    case ConnectionState.Disconnected:
-      return net.known ? "Disconnected" : "Unknown";
-    default:
-      return net.known ? "Known network" : "Unknown";
-    }
-  }
 
   // Autoscroll on vim keys
   onFocusedIndexChanged: {
@@ -139,26 +43,19 @@ FocusScope {
     }
   }
 
-  Timer {
-    id: scanTimer
-    interval: 25000
-    repeat: false
-    onTriggered: if (Networking) wifiDev.scannerEnabled = false
-  }
-
   // Keyboard shortcuts
   Keys.onPressed: event => {
     switch (event.key) {
 
     // Close with `escape`
     case Qt.Key_Escape:
-      root.visible = false
+      WifiService.visible = false
       focusedIndex = 0
       break
 
     // Navigate with vim keys
     case Qt.Key_J:
-      focusedIndex = Math.min(focusedIndex + 1, root.wifiNetsSorted?.length - 1)
+      focusedIndex = Math.min(focusedIndex + 1, WifiService.wifiNetsSorted?.length - 1)
       break
     case Qt.Key_K:
       focusedIndex = Math.max(focusedIndex - 1, 0)
@@ -167,7 +64,7 @@ FocusScope {
     // (Dis)connect with `enter` or `space`
     case Qt.Key_Return:
     case Qt.Key_Space:
-      const net = root.wifiNetsSorted[focusedIndex]
+      const net = WifiService.wifiNetsSorted[focusedIndex]
       if (!net) return;
       if (net.connected && typeof net.disconnect === "function") net.disconnect()
       else if (typeof net.connect === "function") {
@@ -179,7 +76,7 @@ FocusScope {
 
     // Forget device with `D`
     case Qt.Key_D:
-      const network = root.wifiNetsSorted[focusedIndex]
+      const network = WifiService.wifiNetsSorted[focusedIndex]
       if (!network) return;
       focusedIndex = 0
       network.forget()
@@ -188,8 +85,8 @@ FocusScope {
     // Search with `S`
     case Qt.Key_S:
       if (!Networking.wifiEnabled) return;
-      wifiDev.scannerEnabled = !wifiDev.scannerEnabled;
-      if (wifiDev.scannerEnabled)
+      WifiService.wifiDev.scannerEnabled = !WifiService.wifiDev.scannerEnabled;
+      if (WifiService.wifiDev.scannerEnabled)
         scanTimer.restart()
       else
         scanTimer.stop()
@@ -261,7 +158,7 @@ FocusScope {
       Rectangle {
         visible: Networking.wifiEnabled
         id: scanBtn
-        property bool scanning: Networking ? wifiDev.scannerEnabled : false
+        property bool scanning: Networking ? WifiService.wifiDev.scannerEnabled : false
         color: Config.md3.primary
         height: 40
         radius: 10
@@ -290,8 +187,8 @@ FocusScope {
           cursorShape: Qt.PointingHandCursor
           onClicked: {
             if (!Networking.wifiEnabled) return;
-            wifiDev.scannerEnabled = !wifiDev.scannerEnabled;
-            if (wifiDev.scannerEnabled)
+            WifiService.wifiDev.scannerEnabled = !WifiService.wifiDev.scannerEnabled;
+            if (WifiService.wifiDev.scannerEnabled)
               scanTimer.restart()
             else
               scanTimer.stop()
@@ -301,7 +198,7 @@ FocusScope {
 
       // No devices placeholder
       Rectangle {
-        visible: root.wired && !root.wifiDev
+        visible: WifiService.wired && !WifiService.WifiService.wifiDev
         radius: 10
         color: "#36393f"
         
@@ -313,7 +210,7 @@ FocusScope {
 
       // Devices list
       Rectangle {
-        visible: !root.wired && root.wifiDev
+        visible: !WifiService.wired && WifiService.WifiService.wifiDev
         Layout.fillWidth: true
         Layout.preferredHeight: Math.min(rows.implicitHeight + 10, 410)
         color: "transparent"
@@ -332,13 +229,13 @@ FocusScope {
 
             Repeater {
               id: repeater
-              model: root.wifiNetsSorted
+              model: WifiService.wifiNetsSorted
 
               Rectangle {
                 required property var modelData
                 required property int index
                 readonly property bool isTop: index === 0
-                readonly property bool isBottom: index === root.wifiNetsSorted.length - 1
+                readonly property bool isBottom: index === WifiService.wifiNetsSorted.length - 1
                 readonly property bool active: modelData && modelData.connected
                 implicitHeight: networking.implicitHeight + 10
                 width: rows.width
@@ -417,7 +314,7 @@ FocusScope {
 
                       Text {
                         id: connected
-                        text: root.metaFor(modelData)
+                        text: WifiService.metaFor(modelData)
                         color: Config.md3.on_background
                         font.family: Config.fontFamily
                         font.pixelSize: Config.fontSize - 2
