@@ -21,7 +21,7 @@ Rectangle {
 
       // Hour
       Text {
-        text: Qt.formatTime(Time.time, "h")
+        text: Qt.formatTime(TimeService.time, "h")
         color: Config.md3.primary
         font.pixelSize: 66
         font.weight: 900
@@ -36,7 +36,7 @@ Rectangle {
 
       // Minutes
       Text {
-        text: Qt.formatTime(Time.time, "mm")
+        text: Qt.formatTime(TimeService.time, "mm")
         color: Config.md3.primary
         font.pixelSize: 66
         font.weight: 900
@@ -44,7 +44,7 @@ Rectangle {
 
       // AM/PM
       Text {
-        text: Qt.formatTime(Time.time, "AP")
+        text: Qt.formatTime(TimeService.time, "AP")
         color: Config.md3.tertiary
         font.pixelSize: 66
         font.weight: 900
@@ -53,7 +53,7 @@ Rectangle {
 
     Text {
       anchors.horizontalCenter: parent.horizontalCenter
-      text: Qt.formatDateTime(Time.time, "dddd, d MMMM yyyy")
+      text: Qt.formatDateTime(TimeService.time, "dddd, d MMMM yyyy")
       color: Config.md3.secondary
       font.pixelSize: 24
       font.weight: 600

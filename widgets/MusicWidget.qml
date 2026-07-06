@@ -9,7 +9,7 @@ import QtQuick.Layouts
 import Quickshell.Widgets
 
 import "../config"
-import "../modules/music"
+import "../services/music"
 
 Variants {
   model: Quickshell.screens
@@ -35,7 +35,7 @@ Variants {
 
         Image {
           anchors.fill: parent
-          source: Music.active.trackArtUrl
+          source: MusicService.active.trackArtUrl
           fillMode: Image.PreserveAspectCrop
         }
       }
@@ -50,11 +50,11 @@ Variants {
 
         MouseArea {
           anchors.fill: parent
-          onClicked: Music.active.canTogglePlaying ? Music.active.togglePlaying() : null
+          onClicked: MusicService.active.canTogglePlaying ? MusicService.active.togglePlaying() : null
         }
 
         Text {
-          text: Music.active.isPlaying ? "󰏤" : ""
+          text: MusicService.active.isPlaying ? "󰏤" : ""
           font.pixelSize: 30
           anchors.centerIn: parent
         }
@@ -72,7 +72,7 @@ Variants {
 
         MouseArea {
           anchors.fill: parent
-          onClicked: Music.active.canGoNext ? Music.active.next() : null
+          onClicked: MusicService.active.canGoNext ? MusicService.active.next() : null
         }
 
         Text {

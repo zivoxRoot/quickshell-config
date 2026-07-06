@@ -87,7 +87,7 @@ FocusScope {
         spacing: 10
 
         Text {
-          text: Qt.formatDateTime(Time.time, "hh:mm")
+          text: Qt.formatDateTime(TimeService.time, "hh:mm")
           color: Config.md3.on_background
           anchors.horizontalCenter: parent.horizontalCenter
           font.family: Config.fontFamily
@@ -95,7 +95,7 @@ FocusScope {
         }
 
         Text {
-          text: Qt.formatDateTime(Time.time, "ddd d MMMM")
+          text: Qt.formatDateTime(TimeService.time, "ddd d MMMM")
           color: Config.md3.primary
           anchors.horizontalCenter: parent.horizontalCenter
           font.family: Config.fontFamily

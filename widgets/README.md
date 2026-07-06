@@ -1,4 +1,12 @@
-# Analog clock
+# Widgets
+
+Optional desktop widgets that can be placed on the wallpaper behind any other window.
+
+---
+
+> Informations I keep there for later
+
+## Analog clock
 
 ```qml
 Canvas {

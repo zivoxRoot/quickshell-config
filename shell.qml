@@ -13,7 +13,7 @@ Scope {
   Brightness {}
   Volume {}
   Lockscreen {}
-  Clock {}
-  Music {}
+  ClockWidget {}
+  MusicWidget {}
   Pill {}
 }

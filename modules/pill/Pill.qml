@@ -81,7 +81,7 @@ ShellRoot {
 
   Component {
     id: musicMenu
-    MusicModule {}
+    Music {}
   }
 
   Component {
@@ -138,7 +138,7 @@ ShellRoot {
         radius: height / 2
 
         Text {
-          text: Qt.formatDateTime(Time.time, "hh:mm")
+          text: Qt.formatDateTime(TimeService.time, "hh:mm")
           anchors.centerIn: parent
           color: Config.md3.on_background
           font.family: Config.fontFamily

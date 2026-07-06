@@ -30,7 +30,7 @@ Variants {
 
       // Hours
       Text {
-        text: Qt.formatTime(Time.time, "h")
+        text: Qt.formatTime(TimeService.time, "h")
         color: Config.md3.primary
         font.pixelSize: 66
         font.weight: 900
@@ -45,7 +45,7 @@ Variants {
 
       // Minutes
       Text {
-        text: Qt.formatTime(Time.time, "mm")
+        text: Qt.formatTime(TimeService.time, "mm")
         color: Config.md3.tertiary
         font.pixelSize: 66
         font.weight: 900
@@ -53,7 +53,7 @@ Variants {
 
       // AM / PM
       Text {
-        text: Qt.formatTime(Time.time, "AP")
+        text: Qt.formatTime(TimeService.time, "AP")
         color: Config.md3.tertiary
         font.pixelSize: 16
         Layout.alignment: Qt.AlignTop
@@ -71,7 +71,7 @@ Variants {
       ColumnLayout {
         // Month
         Text {
-          text: Qt.formatDateTime(Time.time, "MMMM")
+          text: Qt.formatDateTime(TimeService.time, "MMMM")
           color: Config.md3.tertiary
           font.pixelSize: 16
           font.weight: 900
@@ -79,7 +79,7 @@ Variants {
 
         // Day number
         Text {
-          text: Qt.formatDateTime(Time.time, "d")
+          text: Qt.formatDateTime(TimeService.time, "d")
           color: Config.md3.primary
           font.pixelSize: 16
           font.weight: 900
@@ -87,7 +87,7 @@ Variants {
 
         // Date text
         Text {
-          text: Qt.formatDateTime(Time.time, "dddd")
+          text: Qt.formatDateTime(TimeService.time, "dddd")
           color: Config.md3.tertiary
           font.pixelSize: 16
           font.weight: 400
