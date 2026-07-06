@@ -1,15 +1,10 @@
 import QtQuick
-import QtQml.Models
-import Quickshell
-import Quickshell.Bluetooth
-import Quickshell.Wayland
-import Quickshell.Io
 import QtQuick.Layouts
 
 import "../../config"
+import "../../services/bluetooth"
 
 FocusScope {
-  id: root
   implicitHeight: Math.min(
     maxPopupHeight,
     contentColumn.implicitHeight + 10
@@ -17,64 +12,6 @@ FocusScope {
   implicitWidth: 380
 
   readonly property int maxPopupHeight: 600
-  readonly property var adapter: typeof Bluetooth !== "undefined" && Bluetooth ? Bluetooth.defaultAdapter : null
-  readonly property var devices: typeof Bluetooth !== "undefined" && Bluetooth && Bluetooth.devices ? Bluetooth.devices.values : []
-  readonly property int connectedCount: {
-    var n = 0;
-    for (var i = 0; i < devices.length; i++) if (devices[i] && devices[i].connected) n++;
-    return n
-  }
-  readonly property var sortedDevices: {
-    var arr = root.devices.slice();
-    arr.sort(function(a, b) {
-      function rank(d) {
-        if (d.connected) return 0;
-        if (d.trusted) return 1;
-        if (d.paired) return 2;
-        return 3;
-      }
-      return rank(a) - rank(b);
-    });
-    return arr;
-  }
-
-  function iconFor(device) {
-    switch (device.icon) {
-    case "audio-headphones":
-      return "󰋋";
-    case "audio-headset":
-      return "󰋎";
-    case "input-mouse":
-      return "󰍽";
-    case "input-keyboard":
-      return "󰌓";
-    default:
-      return "󰂯";
-    }
-  }
-
-  function metaFor(d) {
-    if (!d) return "";
-    var parts = [];
-    if (d.connected) parts.push("connected");
-    else if (d.paired) parts.push("paired");
-    if (d.state !== undefined && typeof BluetoothDeviceState !== "undefined") {
-      var st = BluetoothDeviceState.toString(d.state);
-      if(st && st.length > 0 && parts.indexOf(st.toLowerCase()) === -1) parts.push(st.toLowerCase());
-    }
-    const block =  parts.join(" · ");
-    if (block.length === 0) return ""
-    return block.charAt(0).toUpperCase() + block.slice(1)
-  }
-
-  function batteryFor(d) {
-    if (!d || d.battery === undefined || d.battery === null) return "";
-    var b = d.battery;
-    if (b <= 0) return "";
-    if (b <= 1) b = b * 100;
-    return Math.round(b) + "%";
-  }
-
   property int focusedIndex: 0
 
   // Autoscroll
@@ -96,24 +33,18 @@ FocusScope {
     }
   }
 
-  Timer {
-    id: scanTimer
-    interval: 25000
-    repeat: false
-    onTriggered: if (root.adapter) root.adapter.discovering = false
-  }
-
   Keys.onPressed: event => {
     switch (event.key) {
+
     // Close with `escape`
     case Qt.Key_Escape:
-      root.visible = false
+      BluetoothService.visible = false
       focusedIndex = 0
       break
 
     // Navigate with vim keys
     case Qt.Key_J:
-      focusedIndex = Math.min(focusedIndex + 1, devices?.length - 1)
+      focusedIndex = Math.min(focusedIndex + 1, BluetoothService.sortedDevices?.length - 1)
       break
     case Qt.Key_K:
       focusedIndex = Math.max(focusedIndex - 1, 0)
@@ -122,33 +53,33 @@ FocusScope {
     // (Dis)connect with `enter` or `space`
     case Qt.Key_Return:
     case Qt.Key_Space:
-      const device = root.sortedDevices[focusedIndex]
+      const device = BluetoothService.sortedDevices[focusedIndex]
       if (!device) return;
       if (device.connected) device.disconnect();
       else if (device.pairing) device.cancelPair();
       else device.connect();
       break
 
-    // Forget device with `D`
+    // Forget BluetoothService.device with `D`
     case Qt.Key_D:
-      const dev = root.sortedDevices[focusedIndex]
+      const dev = BluetoothService.sortedDevices[focusedIndex]
       if (!dev) return;
       dev.forget()
       break
 
     // Search with `S`
     case Qt.Key_S:
-      if (!root.adapter) return;
-      root.adapter.discovering = !root.adapter.discovering;
-      if (root.adapter.discovering)
-        scanTimer.restart()
+      if (!BluetoothService.adapter) return;
+      BluetoothService.adapter.discovering = !BluetoothService.adapter.discovering;
+      if (BluetoothService.adapter.discovering)
+        BluetoothService.scanTimer.restart()
       else
-        scanTimer.stop()
+        BluetoothService.scanTimer.stop()
       break
 
     // Toggle bluetooth with `T`
     case Qt.Key_T:
-      if (root.adapter) root.adapter.enabled = !root.adapter.enabled
+      if (BluetoothService.adapter) BluetoothService.adapter.enabled = !BluetoothService.adapter.enabled
       break
     }
   }
@@ -169,7 +100,7 @@ FocusScope {
       RowLayout {
         Rectangle {
           id: toggleBluetooth
-          color: root.adapter ? (root.adapter.enabled ? Config.md3.secondary : Config.md3.background) : Config.md3.background
+          color: BluetoothService.adapter ? (BluetoothService.adapter.enabled ? Config.md3.secondary : Config.md3.background) : Config.md3.background
           radius: 12
           height: 40
           width: 40
@@ -180,8 +111,8 @@ FocusScope {
 
           Text {
             anchors.centerIn: parent
-            text: root.adapter ? (root.adapter.enabled ? "󰂯" : "󰂲") : "󰂲"
-            color: root.adapter ? (root.adapter.enabled ? Config.md3.on_secondary : Config.md3.on_background) : Config.md3.on_background
+            text: BluetoothService.adapter ? (BluetoothService.adapter.enabled ? "󰂯" : "󰂲") : "󰂲"
+            color: BluetoothService.adapter ? (BluetoothService.adapter.enabled ? Config.md3.on_secondary : Config.md3.on_background) : Config.md3.on_background
             font.family: Config.fontFamily
             font.pixelSize: Config.fontSize + 6
           }
@@ -190,7 +121,7 @@ FocusScope {
             anchors.fill: parent
             cursorShape: Qt.PointingHandCursor
             onClicked: {
-              if (root.adapter) root.adapter.enabled = !root.adapter.enabled
+              if (BluetoothService.adapter) BluetoothService.adapter.enabled = !BluetoothService.adapter.enabled
             }
           }
         }
@@ -205,15 +136,15 @@ FocusScope {
       }
       // Keep padding under button when bluetooth desactivated
       Item {
-        visible: !root.adapter.enabled
+        visible: !BluetoothService.adapter.enabled
         height: 0
       }
 
       // Scan button
       Rectangle {
-        visible: root.adapter.enabled
+        visible: BluetoothService.adapter.enabled
         id: scanBtn
-        property bool scanning: root.adapter ? root.adapter.discovering : false
+        property bool scanning: BluetoothService.adapter ? BluetoothService.adapter.discovering : false
         color: Config.md3.primary
         height: 40
         radius: 10
@@ -241,31 +172,31 @@ FocusScope {
           anchors.fill: parent
           cursorShape: Qt.PointingHandCursor
           onClicked: {
-            if (!root.adapter) return;
-            root.adapter.discovering = !root.adapter.discovering;
-            if (root.adapter.discovering)
-              scanTimer.restart()
+            if (!BluetoothService.adapter) return;
+            BluetoothService.adapter.discovering = !BluetoothService.adapter.discovering;
+            if (BluetoothService.adapter.discovering)
+              BluetoothService.scanTimer.restart()
             else
-              scanTimer.stop()
+              BluetoothService.scanTimer.stop()
           }
         }
       }
 
-      // No devices placeholder
+      // No BluetoothService.devices placeholder
       Rectangle {
-        visible: root.sortedDevices.length === 0
+        visible: BluetoothService.sortedBluetoothService.devices.length === 0
         radius: 10
         color: "#36393f"
         
         Text {
           anchors.centerIn: parent
-          text: "No devices found"
+          text: "No BluetoothService.devices found"
         }
       }
 
-      // Devices list
+      // BluetoothService.devices list
       Rectangle {
-        visible: root.adapter.enabled
+        visible: BluetoothService.adapter.enabled
         Layout.fillWidth: true
         Layout.preferredHeight: Math.min(rows.implicitHeight + 10, 410)
         color: "transparent"
@@ -284,15 +215,15 @@ FocusScope {
 
             Repeater {
               id: repeater
-              model: root.sortedDevices
+              model: BluetoothService.sortedDevices
 
               Rectangle {
                 required property var modelData
                 required property int index
                 readonly property bool isTop: index === 0
-                readonly property bool isBottom: index === root.sortedDevices.length - 1
+                readonly property bool isBottom: index === BluetoothService.sortedDevices.length - 1
                 readonly property bool isConnected: modelData ? modelData.connected : false
-                readonly property string battery: root.batteryFor(modelData)
+                readonly property string battery: BluetoothService.batteryFor(modelData)
                 implicitHeight: 54
                 width: rows.width
                 topLeftRadius: isTop ? 10 : 0
@@ -319,7 +250,7 @@ FocusScope {
                   
                   Text {
                     leftPadding: 10
-                    text: iconFor(modelData)
+                    text: BluetoothService.iconFor(modelData)
                     color: isConnected ? Config.md3.primary : Config.md3.on_background
 
                     font.pixelSize: Config.fontSize + 4
@@ -337,7 +268,7 @@ FocusScope {
 
                     Text {
                       id: label
-                      text: (modelData ? (modelData.deviceName || modelData.name || "Unknown") : "Unknown")
+                      text: (modelData ? (modelData.BluetoothService.deviceName || modelData.name || "Unknown") : "Unknown")
                       color: Config.md3.on_background
                       font.bold: true
                       font.family: Config.fontFamily
@@ -346,7 +277,7 @@ FocusScope {
 
                     Text {
                       id: connected
-                      text: root.metaFor(modelData)
+                      text: BluetoothService.metaFor(modelData)
                       color: Config.md3.on_background
                       font.family: Config.fontFamily
                       font.pixelSize: Config.fontSize - 2
