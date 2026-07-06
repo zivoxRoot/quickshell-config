@@ -5,6 +5,7 @@ import "modules/brightness"
 import "modules/volume"
 import "modules/lockscreen"
 import "modules/pill"
+import "widgets"
 
 Scope {
   NotificationsCenter {}
@@ -12,5 +13,6 @@ Scope {
   Brightness {}
   Volume {}
   Lockscreen {}
+  Clock {}
   Pill {}
 }
