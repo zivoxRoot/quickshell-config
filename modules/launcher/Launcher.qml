@@ -90,13 +90,11 @@ FocusScope {
       anchors.margins: 10
       spacing: 10
 
-      TextField {
+      TextInput {
         id: input
         Layout.fillWidth: true
-        placeholderText: "Search an application"
-        placeholderTextColor: Config.md3.on_background
         color: "white"
-        background: textBg
+        font.pixelSize: 16
 
         Keys.onPressed: event => {
           if (event.key === Qt.Key_Escape) {
