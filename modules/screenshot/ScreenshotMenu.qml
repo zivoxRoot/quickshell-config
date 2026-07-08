@@ -1,14 +1,8 @@
 import QtQuick
-import QtQml.Models
-import Quickshell
-import Quickshell.Bluetooth
-import Quickshell.Wayland
-import Quickshell.Io
-import QtQuick.Shapes
 import QtQuick.Layouts
-import Quickshell.Widgets
 
 import "../../config"
+import "../../services/screenshot"
 
 FocusScope {
   id: root
@@ -38,43 +32,6 @@ FocusScope {
       root.focusedIndex = Math.max(focusedIndex - 1, 0)
       break
     }
-  }
-
-  function launchCommand(command) {
-    visible = false
-
-    switch (command) {
-    case "screenshot_fullscreen":
-      screenshot_fullscreen.running = true
-      break
-    case "screenshot_window":
-      screenshot_window.running = true
-      break
-    case "screenshot_region":
-      screenshot_region.running = true
-      break
-    }
-  }
-
-  property bool freeze: false
-  readonly property list<string> hyprshot_args: ["hyprshot", "--output-folder", Quickshell.env("HOME") + "/Pictures/Screenshots", freeze ? "--freeze" : ""]
-
-  Process {
-    id: screenshot_fullscreen
-    running: false
-    command: [...hyprshot_args, "--mode", "output"]
-  }
-
-  Process {
-    id: screenshot_window
-    running: false
-    command: [...hyprshot_args, "--mode", "window"]
-  }
-
-  Process {
-    id: screenshot_region
-    running: false
-    command: [...hyprshot_args, "--mode", "region"]
   }
 
   Rectangle {
@@ -198,7 +155,10 @@ FocusScope {
 
               MouseArea {
                 anchors.fill: parent
-                onClicked: launchCommand("screenshot_region")
+                onClicked: {
+                  root.visible = false
+                  ScreenshotService.launchCommand("screenshot_region")
+                }
               }
 
               Text {
@@ -219,7 +179,10 @@ FocusScope {
 
               MouseArea {
                 anchors.fill: parent
-                onClicked: launchCommand("screenshot_window")
+                onClicked: {
+                  root.visible = false
+                  ScreenshotService.launchCommand("screenshot_window")
+                }
               }
 
               Text {
@@ -240,7 +203,10 @@ FocusScope {
 
               MouseArea {
                 anchors.fill: parent
-                onClicked: launchCommand("screenshot_fullscreen")
+                onClicked: {
+                  root.visible = false
+                  ScreenshotService.launchCommand("screenshot_fullscreen")
+                }
               }
 
               Text {
@@ -257,18 +223,18 @@ FocusScope {
           Rectangle {
             height: 30
             Layout.fillWidth: true
-            color: freeze ? Config.md3.primary : Config.md3.tertiary
+            color: ScreenshotService.freeze ? Config.md3.primary : Config.md3.tertiary
             radius: 10
 
             MouseArea {
               anchors.fill: parent
-              onClicked: freeze = !freeze
+              onClicked: ScreenshotService.toggleFreeze()
             }
 
             Text {
               anchors.centerIn: parent
-              text: freeze ? "Freeze on" : "Freeze off"
-              color: freeze ? Config.md3.on_primary : Config.md3.on_tertiary
+              text: ScreenshotService.freeze ? "Freeze on" : "Freeze off"
+              color: ScreenshotService.freeze ? Config.md3.on_primary : Config.md3.on_tertiary
               font.family: Config.fontFamily
               font.pixelSize: Config.fontSize
             }
