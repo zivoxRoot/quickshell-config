@@ -215,7 +215,7 @@ FocusScope {
               Rectangle {
                 id: playPauseBtn
                 property bool pressed: false
-                Layout.preferredWidth: pressed ? parent.height + 40 : parent.height - 20
+                Layout.preferredWidth: pressed ? parent.height + 30 : parent.height - 20
                 Layout.preferredHeight: parent.height - 20
                 radius: MusicService.active.isPlaying ? 20 : height / 2
                 color: Config.md3.primary

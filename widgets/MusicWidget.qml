@@ -43,10 +43,17 @@ Variants {
       // Play/pause button
       Rectangle {
         color: Config.md3.primary
-        radius: 20
+        radius: MusicService.active.isPlaying ? 20 : height / 2
         height: 60
         width: height
         anchors.bottom: parent.bottom
+
+        Behavior on radius {
+          NumberAnimation {
+            duration: 250
+            easing.type: Easing.InOutQuad
+          }
+        }
 
         MouseArea {
           anchors.fill: parent
