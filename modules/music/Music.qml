@@ -23,6 +23,7 @@ FocusScope {
     case Qt.Key_Space:
     case Qt.Key_K:
       MusicService.active.canTogglePlaying ? MusicService.active.togglePlaying() : null
+      MusicService.active.canTogglePlaying ? playPauseBtn.playPressAnimation() : null
       break
 
     // Next/Previous track with `N` and `P`
@@ -212,14 +213,42 @@ FocusScope {
 
               // Play/pause
               Rectangle {
-                Layout.preferredWidth: parent.height - 20
+                id: playPauseBtn
+                property bool pressed: false
+                Layout.preferredWidth: pressed ? parent.height + 40 : parent.height - 20
                 Layout.preferredHeight: parent.height - 20
-                radius: 25
+                radius: MusicService.active.isPlaying ? 20 : height / 2
                 color: Config.md3.primary
                 Layout.bottomMargin: 10
                 Layout.topMargin: 10
 
+                function playPressAnimation() {
+                  pressed = true
+                  resetTimer.restart()
+                }
+
+                Timer {
+                  id: resetTimer
+                  interval: 120
+                  onTriggered: playPauseBtn.pressed = false
+                }
+
+                Behavior on radius {
+                  NumberAnimation {
+                    duration: 250
+                    easing.type: Easing.InOutQuad
+                  }
+                }
+
+                Behavior on Layout.preferredWidth {
+                  NumberAnimation {
+                    duration: 250
+                    easing.type: Easing.InOutQuad
+                  }
+                }
+
                 MouseArea {
+                  onPressed: playPauseBtn.playPressAnimation()
                   anchors.fill: parent
                   onClicked: MusicService.active.canTogglePlaying ? MusicService.active.togglePlaying() : null
                 }
