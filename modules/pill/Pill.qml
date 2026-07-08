@@ -11,6 +11,7 @@ import "../../modules/logoutMenu"
 import "../../modules/launcher"
 import "../../modules/wallpaper_switcher"
 import "../../modules/control_center"
+import "../../modules/screenshot"
 
 import "../../config"
 import "../../services/time"
@@ -67,6 +68,10 @@ ShellRoot {
     function control_center(): void {
       toggle("control_center")
     }
+
+    function screenshot_menu(): void {
+      toggle("screenshot_menu")
+    }
   }
 
   Component {
@@ -102,6 +107,11 @@ ShellRoot {
   Component {
     id: controlCenterMenu
     ControlCenter {}
+  }
+
+  Component {
+    id: screenshotMenu
+    ScreenshotMenu {}
   }
 
   // Centered pill that morphes into other elements
@@ -164,6 +174,7 @@ ShellRoot {
           currentSurface === "launcher" ? launcherMenu :
           currentSurface === "wallpaper_switcher" ? wallpaperSwitcherMenu :
           currentSurface === "control_center" ? controlCenterMenu :
+          currentSurface === "screenshot_menu" ? screenshotMenu :
           null
 
         onItemChanged: {
