@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 import QtQuick.Layouts
 
 import "../../config"
@@ -147,18 +148,18 @@ FocusScope {
           Rectangle {
             height: 30
             Layout.fillWidth: true
-            color: ScreenshotService.screen_recording ? Config.md3.primary : Config.md3.tertiary
+            color: ScreenrecordService.screen_recording ? "red" : Config.md3.tertiary
             radius: 10
 
             MouseArea {
               anchors.fill: parent
-              onClicked: ScreenshotService.screen_recording ? ScreenshotService.launchCommand("stop_screen_recording") : null
+              onClicked: ScreenrecordService.screen_recording ? ScreenrecordService.stop() : null
             }
 
             Text {
               anchors.centerIn: parent
-              text: ScreenshotService.screen_recording ? "Recording on" : "Recording off"
-              color: ScreenshotService.screen_recording ? Config.md3.on_primary : Config.md3.on_tertiary
+              text: ScreenrecordService.screen_recording ? "Recording on" : "Recording off"
+              color: ScreenrecordService.screen_recording ? Config.md3.on_primary : Config.md3.on_tertiary
               font.family: Config.fontFamily
               font.pixelSize: Config.fontSize
             }
@@ -178,7 +179,7 @@ FocusScope {
                 anchors.fill: parent
                 onClicked: {
                   root.visible = false
-                  ScreenshotService.launchCommand("screenshot_region")
+                  ScreenrecordService.region()
                 }
               }
 
@@ -202,7 +203,7 @@ FocusScope {
                 anchors.fill: parent
                 onClicked: {
                   root.visible = false
-                  ScreenshotService.launchCommand("screenshot_window")
+                  ScreenrecordService.window()
                 }
               }
 
@@ -226,7 +227,7 @@ FocusScope {
                 anchors.fill: parent
                 onClicked: {
                   root.visible = false
-                  ScreenshotService.launchCommand("screen_record_fullscreen")
+                  ScreenrecordService.fullscreen()
                 }
               }
 
@@ -244,7 +245,7 @@ FocusScope {
           Rectangle {
             height: 30
             Layout.fillWidth: true
-            color: ScreenshotService.screen_recording ? Config.md3.primary : Config.md3.tertiary
+            color: ScreenrecordService.screen_recording ? Config.md3.primary : Config.md3.tertiary
             radius: 10
 
             RowLayout {
@@ -252,19 +253,19 @@ FocusScope {
               spacing: 5
 
               Repeater {
-                model: ScreenshotService.outputs
+                model: ScreenrecordService.outputs
 
                 Rectangle {
                   required property var modelData
                   required property int index
                   height: 30
                   width: 70
-                  color: index === root.ScreenshotService.output_to_record ? Config.md3.primary : Config.md3.tertiary
-                  radius: index === root.ScreenshotService.output_to_record ? height / 2 : 10
+                  color: index === ScreenrecordService.output_to_record ? Config.md3.primary : Config.md3.tertiary
+                  radius: index === ScreenrecordService.output_to_record ? height / 2 : 10
 
                   MouseArea {
                     anchors.fill: parent
-                    onClicked: ScreenshotService.output_to_record = index
+                    onClicked: ScreenrecordService.output_to_record = index
                   }
 
                   Text {
@@ -289,7 +290,7 @@ FocusScope {
           RowLayout {
             spacing: 3
 
-            // Selection
+            // Region
             Rectangle {
               color: Config.md3.secondary
               height: 100
@@ -300,7 +301,7 @@ FocusScope {
                 anchors.fill: parent
                 onClicked: {
                   root.visible = false
-                  ScreenshotService.launchCommand("screenshot_region")
+                  ScreenshotService.region()
                 }
               }
 
@@ -324,7 +325,7 @@ FocusScope {
                 anchors.fill: parent
                 onClicked: {
                   root.visible = false
-                  ScreenshotService.launchCommand("screenshot_window")
+                  ScreenshotService.window()
                 }
               }
 
@@ -348,7 +349,7 @@ FocusScope {
                 anchors.fill: parent
                 onClicked: {
                   root.visible = false
-                  ScreenshotService.launchCommand("screenshot_fullscreen")
+                  ScreenshotService.fullscreen()
                 }
               }
 
