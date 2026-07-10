@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 OUTPUT_DIR="$HOME/Pictures/Screenshots"
-FILENAME="$(date +'%Y-%m-%d_%H-%M-%S').mkv"
+FILENAME="$(date +'%Y-%m-%d_%H-%M-%S').png"
 FILEPATH="$OUTPUT_DIR/$FILENAME"
 
 mkdir -p "$OUTPUT_DIR"
@@ -20,10 +20,24 @@ notify() {
 
   case "$action" in
     "copy") wl-copy "$FILEPATH" ;;
-    "open") satty --filename "$FILEPATH" ;;
-    "delete") rm "$FILEPATH" ;;
-    "find") notify-send "FIND THIS SHIT" "$FILEPATH" ;;
-    "ocr") notify-send "OCR THIS SHIT" "$FILEPATH" ;;
+    "edit")
+      satty --filename "$FILEPATH" &
+      disown
+      notify-send "Screenshot copied"
+      ;;
+    "delete")
+      rm "$FILEPATH" &
+      disown
+      notify-send "Screenshot deleted"
+      ;;
+    "find")
+      "$HOME/.config/quickshell/services/screenshot/google_search.sh" "$FILEPATH" &
+      disown
+      ;;
+    "ocr")
+      "$HOME/.config/quickshell/services/screenshot/ocr.sh" "$FILEPATH" &
+      disown
+      ;;
   esac
 }
 
@@ -34,15 +48,14 @@ fi
 
 case "$1" in
   "fullscreen")
-    hyprshot "${FREEZE_ARGS[@]}" --silent --output-folder "$FILEPATH" --mode output
-    notify
+    hyprshot "${FREEZE_ARGS[@]}" --silent --output-folder "$OUTPUT_DIR" --filename "$FILENAME" --mode output
     ;;
   "window")
-    hyprshot "${FREEZE_ARGS[@]}" --silent --output-folder "$FILEPATH" --mode window
-    notify
+    hyprshot "${FREEZE_ARGS[@]}" --silent --output-folder "$OUTPUT_DIR" --filename "$FILENAME" --mode window
     ;;
   "region")
-    hyprshot "${FREEZE_ARGS[@]}" --silent --output-folder "$FILEPATH" --mode region
-    notify
+    hyprshot "${FREEZE_ARGS[@]}" --silent --output-folder "$OUTPUT_DIR" --filename "$FILENAME" --mode region
     ;;
 esac
+
+notify

@@ -21,18 +21,6 @@ get_region_geometry() {
 
 start_notify() {
   notify-send --app-name="Screenrecord" "Recording started"
-  # local action  # NOTE: doesn't work as it doesn't stop the `recording` state in the QML app...
-  # action=$(notify-send \
-  #   --app-name="Screenshot" \
-  #   --action=stop="Stop" \
-  #   "Recording started")
-
-  # case "$action" in
-  #   "stop")
-  #     pkill -x wf-recorder
-  #     stop_notify
-  #     ;;
-  # esac
 }
 
 stop_notify() {
@@ -46,8 +34,16 @@ stop_notify() {
 
   case "$action" in
     "copy") wl-copy "$FILEPATH" ;;
-    "open") mpv "$FILEPATH" ;;
-    "delete") rm "$FILEPATH" ;;
+    "open")
+      mpv "$FILEPATH" &
+      disown
+      notify-send "Screen recording opened in MPV"
+      ;;
+    "delete")
+      rm "$FILEPATH" &
+      disown
+      notify-send "Screen recording deleted"
+      ;;
   esac
 }
 
