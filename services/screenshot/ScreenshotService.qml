@@ -10,7 +10,7 @@ Singleton {
     freeze = !freeze
   }
 
-  function fullscreen() {
+  function full() {
     Quickshell.execDetached(["bash", Quickshell.shellPath("services/screenshot/screenshot.sh"), "fullscreen", freeze ? "freeze" : ""])
   }
 

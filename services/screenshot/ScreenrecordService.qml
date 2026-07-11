@@ -17,7 +17,7 @@ Singleton {
     running: true
   }
 
-  function fullscreen() {
+  function full() {
     Quickshell.execDetached(["bash", Quickshell.shellPath("services/screenshot/screenrecord.sh"), "fullscreen", outputs[output_to_record]])
     screen_recording = true
   }

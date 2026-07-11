@@ -3,6 +3,7 @@ import Quickshell
 import QtQuick.Layouts
 
 import "../../config"
+import "../../components"
 import "../../services/screenshot"
 
 FocusScope {
@@ -47,91 +48,10 @@ FocusScope {
       anchors.margins: 10
       spacing: 10
 
-      // Top navigation buttons
-      RowLayout {
-        spacing: 3
-
-        // Screen recording
-        Rectangle {
-          radius: focusedIndex == 0 ? height / 2 : 3
-          topLeftRadius: height / 2
-          bottomLeftRadius: height / 2
-          color: focusedIndex == 0 ? Config.md3.primary : Config.md3.tertiary
-          height: 30
-          Layout.fillWidth: true
-
-          Behavior on color {
-            ColorAnimation { duration: 150 }
-          }
-
-          Behavior on radius {
-            NumberAnimation {
-              duration: 150
-              easing.type: Easing.InOutQuad
-            }
-          }
-
-          Text {
-            anchors.centerIn: parent
-            text: "Recording"
-            font.family: Config.fontFamily
-            font.pixelSize: Config.fontSize
-          }
-        }
-
-        // Screenshot
-        Rectangle {
-          radius: focusedIndex == 1 ? height / 2 : 3
-          color: focusedIndex == 1 ? Config.md3.primary : Config.md3.tertiary
-          height: 30
-          Layout.fillWidth: true
-
-          Behavior on color {
-            ColorAnimation { duration: 150 }
-          }
-
-          Behavior on radius {
-            NumberAnimation {
-              duration: 150
-              easing.type: Easing.InOutQuad
-            }
-          }
-
-          Text {
-            anchors.centerIn: parent
-            text: "Screenshot"
-            font.family: Config.fontFamily
-            font.pixelSize: Config.fontSize
-          }
-        }
-
-        // Other
-        Rectangle {
-          radius: focusedIndex == 2 ? height / 2 : 3
-          topRightRadius: height / 2
-          bottomRightRadius: height / 2
-          color: focusedIndex == 2 ? Config.md3.primary : Config.md3.tertiary
-          height: 30
-          Layout.fillWidth: true
-
-          Behavior on color {
-            ColorAnimation { duration: 150 }
-          }
-
-          Behavior on radius {
-            NumberAnimation {
-              duration: 150
-              easing.type: Easing.InOutQuad
-            }
-          }
-
-          Text {
-            anchors.centerIn: parent
-            text: "Other"
-            font.family: Config.fontFamily
-            font.pixelSize: Config.fontSize
-          }
-        }
+      ButtonList {
+        buttons: ["Recording", "Screenshot", "Other"]
+        focused: focusedIndex
+        onClicked: index => focusedIndex = index
       }
 
       // Bottom block -> options for selected recording type
