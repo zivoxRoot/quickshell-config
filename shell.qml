@@ -5,6 +5,7 @@ import "modules/brightness"
 import "modules/volume"
 import "modules/lockscreen"
 import "modules/pill"
+import "modules/calendar"
 import "widgets"
 
 Scope {
@@ -16,4 +17,5 @@ Scope {
   ClockWidget {}
   MusicWidget {}
   Pill {}
+  Calendar {}
 }
